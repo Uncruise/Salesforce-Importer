@@ -3,7 +3,7 @@
     <bean id="Update-ReportRequest_Prod"
           class="com.salesforce.dataloader.process.ProcessRunner"
           scope="prototype">
-        <description>Update for Account.</description>
+        <description>Update for Report Request.</description>
         <property name="name" value="Update-ReportRequest_Prod"/>
         <property name="configOverrideMap">
             <map>

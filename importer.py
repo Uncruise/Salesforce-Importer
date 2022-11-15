@@ -679,6 +679,8 @@ def file_linecount(file_name):
 def import_dataloader(importer_directory, client_type, salesforce_type, operation, updaterequired):
     """Import into Salesforce using DataLoader"""
 
+    print('import_dataloader')
+
     import os
     from os import listdir
     from os.path import join
@@ -691,14 +693,20 @@ def import_dataloader(importer_directory, client_type, salesforce_type, operatio
     return_stdout = ""
     return_stderr = ""
 
+    print('bat_path: ' + bat_path)
+
     for file_name in listdir(bat_path):
 
         if not operation in file_name or ".sdl" not in file_name:
             continue
 
+        print('import_dataloader: ' + 1)
+
         # Check if associated csv has any data
         sheet_name = os.path.splitext(file_name)[0]
         import_file = join(import_path, sheet_name + ".csv")
+
+        print('import_dataloader: ' + 2)
 
         # Check if updaterequired
         if updaterequired and (not os.path.exists(import_file) or not contains_data(import_file)):
