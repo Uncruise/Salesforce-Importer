@@ -126,6 +126,10 @@ def main():
     if 'Cloud' in sys.argv:
         location_local = False
 
+    updaterequired = False
+    if 'UpdateRequired' in sys.argv:
+        updaterequired = True
+
     importer_root = ("C:\\repo\\Salesforce-Importer-Private\\Clients\\" + client_type +
                      "\\Salesforce-Importer")
     if '-rootdir' in sys.argv:
@@ -211,7 +215,8 @@ def main():
                                          interactivemode,
                                          displayalerts,
                                          skipexcelrefresh,
-                                         location_local)
+                                         location_local,
+                                         updaterequired)
 
             if stop_processing:
                 return
@@ -230,11 +235,13 @@ def main():
                                     interactivemode,
                                     displayalerts,
                                     skipexcelrefresh,
-                                    location_local)
+                                    location_local,
+                                    updaterequired)
 
         status_import += process_data(importer_directory, salesforce_type, client_type,
                                      client_subtype, 'Update', wait_time,
-                                     noexportsf, interactivemode, displayalerts, skipexcelrefresh, location_local)
+                                     noexportsf, interactivemode, displayalerts, skipexcelrefresh, location_local,
+                                     updaterequired)
 
     # Report Data
     if reportOnly and not insertOnly and not updateOnly:
@@ -242,7 +249,8 @@ def main():
 
         status_import += process_data(importer_directory, salesforce_type, client_type,
                                      client_subtype, 'Report', wait_time,
-                                     noexportsf, interactivemode, displayalerts, skipexcelrefresh, location_local)
+                                     noexportsf, interactivemode, displayalerts, skipexcelrefresh, location_local,
+                                     updaterequired)
 
     if stop_processing:
         return
@@ -252,7 +260,8 @@ def main():
         print("\n\nImporter - Delete Data Process\n\n")
         status_import = process_data(importer_directory, salesforce_type, client_type,
                                      client_subtype, 'Delete', wait_time,
-                                     noexportsf, interactivemode, displayalerts, skipexcelrefresh, location_local)
+                                     noexportsf, interactivemode, displayalerts, skipexcelrefresh, location_local,
+                                     updaterequired)
 
     if stop_processing:
         return
@@ -297,7 +306,8 @@ def main():
 
 def process_data(importer_directory, salesforce_type, client_type,
                  client_subtype, operation, wait_time,
-                 noexportsf, interactivemode, displayalerts, skipexcelrefresh, location_local):
+                 noexportsf, interactivemode, displayalerts, skipexcelrefresh, location_local,
+                 updaterequired):
     """Process Data based on operation"""
 
     #Create log file for import status and reports
@@ -355,7 +365,8 @@ def process_data(importer_directory, salesforce_type, client_type,
             if not contains_error(status_process_data) and not contains_error(output_log):
                 status_process_data = import_dataloader(importer_directory,
                                                         client_type, salesforce_type,
-                                                        operation)
+                                                        operation,
+                                                        updaterequired)
             else:
                 print(status_process_data, output_log)
                 status_process_data = "Error detected so skip processing"
@@ -665,7 +676,7 @@ def file_linecount(file_name):
 
     return line_index
 
-def import_dataloader(importer_directory, client_type, salesforce_type, operation):
+def import_dataloader(importer_directory, client_type, salesforce_type, operation, updaterequired):
     """Import into Salesforce using DataLoader"""
 
     import os
@@ -680,15 +691,19 @@ def import_dataloader(importer_directory, client_type, salesforce_type, operatio
     return_stdout = ""
     return_stderr = ""
 
-    import_successful = False
-
     for file_name in listdir(bat_path):
+
         if not operation in file_name or ".sdl" not in file_name:
             continue
 
         # Check if associated csv has any data
         sheet_name = os.path.splitext(file_name)[0]
         import_file = join(import_path, sheet_name + ".csv")
+
+        # Check if updaterequired
+        if updaterequired and (not os.path.exists(import_file) or not contains_data(import_file)):
+            raise Exception("updaterequired - import_file missing or empty: " + import_file)
+
         if not os.path.exists(import_file) or not contains_data(import_file):
             continue
 
@@ -720,9 +735,7 @@ def import_dataloader(importer_directory, client_type, salesforce_type, operatio
                     return_code + return_stdout + return_stderr))
 
         message = "Finished Import Process: " + bat_file + " for file: " + import_file
-        print message
-
-        import_successful = True
+        print(message)
 
     return return_code + return_stdout + return_stderr
 
