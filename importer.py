@@ -714,8 +714,12 @@ def import_dataloader(importer_directory, client_type, salesforce_type, operatio
         if updaterequired and (not os.path.exists(import_file) or not contains_data(import_file)):
             raise Exception("updaterequired - import_file missing or empty: " + import_file)
 
+        print('import_dataloader Check 1: ' + import_file)
+
         if not os.path.exists(import_file) or not contains_data(import_file):
             continue
+
+        print('import_dataloader Check 2: ' + import_file)
 
         bat_file = (join(bat_path, "RunDataLoader.bat")
                     + " " + salesforce_type + " "  + client_type + " " + sheet_name)
