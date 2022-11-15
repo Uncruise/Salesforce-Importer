@@ -12,23 +12,23 @@
             "envFile": "${workspaceFolder}/.env",
             "args": [
                 "Prod"
-                ,"IISC"
-                ,"Compass-Insert"
+                ,"UCA"
+                ,"Manifests-Schedule_UpdateRequired"
 //                ,"SYNC-Update2of2"
-                ,"daveb@501commons.org;dboyceman@hotmail.com"
-                ,"-insertattempts"
-                ,"1"
+                ,"daveb@uncruise.com"
+//                ,"-insertattempts"
+//                ,"0"
 //                ,"-noupdate"
 //                ,"-rootdir"
 //                ,"C:\\repo\\Salesforce-Importer-Private"
                 ,"-noexportodbc"
-//                ,"-noexportsf"
+                ,"-noexportsf"
 //                ,"-skipexcelrefresh"
                 ,"-waittime"
                 ,"30"
                 ,"-interactivemode"
                 ,"-location"
-                ,"Cloud"
+                ,"Prod"
             ],
         },
         {

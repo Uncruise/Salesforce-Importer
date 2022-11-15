@@ -1,10 +1,10 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
-    <bean id="Update-ReportRequest_Prod"
+    <bean id="Update-Request_Prod"
           class="com.salesforce.dataloader.process.ProcessRunner"
           scope="prototype">
         <description>Update for Report Request.</description>
-        <property name="name" value="Update-ReportRequest_Prod"/>
+        <property name="name" value="Update-Request_Prod"/>
         <property name="configOverrideMap">
             <map>
                 <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com"/> 
@@ -16,8 +16,8 @@
                 <entry key="sfdc.externalIdField" value="Id"/>
                 <entry key="sfdc.entity" value="Report_Request__c"/>
                 <entry key="process.operation" value="update"/>
-                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\UCA\Salesforce-Importer\Clients\UCA\DataLoader\Update-ReportRequest.sdl"/>
-                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\UCA\Salesforce-Importer\Clients\UCA\Import\Update-ReportRequest.csv"/>
+                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\UCA\Salesforce-Importer\Clients\UCA\DataLoader\Update-Request.sdl"/>
+                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\UCA\Salesforce-Importer\Clients\UCA\Import\Update-Request.csv"/>
                 <entry key="dataAccess.type" value="csvRead"/>
                 <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800"/>
             </map>

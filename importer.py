@@ -127,7 +127,7 @@ def main():
         location_local = False
 
     updaterequired = False
-    if 'UpdateRequired' in sys.argv:
+    if 'UpdateRequired' in client_subtype:
         updaterequired = True
 
     importer_root = ("C:\\repo\\Salesforce-Importer-Private\\Clients\\" + client_type +
@@ -679,8 +679,6 @@ def file_linecount(file_name):
 def import_dataloader(importer_directory, client_type, salesforce_type, operation, updaterequired):
     """Import into Salesforce using DataLoader"""
 
-    print('import_dataloader')
-
     import os
     from os import listdir
     from os.path import join
@@ -693,34 +691,21 @@ def import_dataloader(importer_directory, client_type, salesforce_type, operatio
     return_stdout = ""
     return_stderr = ""
 
-    print('bat_path: ' + bat_path)
+    datafound = False
 
     for file_name in listdir(bat_path):
 
-        print('import_dataloader file_name: ' + file_name + ' operation: ' + operation)
-
         if not operation in file_name or ".sdl" not in file_name:
             continue
-
-        print('import_dataloader: 1')
 
         # Check if associated csv has any data
         sheet_name = os.path.splitext(file_name)[0]
         import_file = join(import_path, sheet_name + ".csv")
 
-        print('import_dataloader: ' + import_file)
-
-        # Check if updaterequired
-        if updaterequired and (not os.path.exists(import_file) or not contains_data(import_file)):
-            raise Exception("updaterequired - import_file missing or empty: " + import_file)
-
-        print('import_dataloader Check 1: ' + import_file)
-
         if not os.path.exists(import_file) or not contains_data(import_file):
             continue
 
-        print('import_dataloader Check 2: ' + import_file)
-
+        datafound = True
         bat_file = (join(bat_path, "RunDataLoader.bat")
                     + " " + salesforce_type + " "  + client_type + " " + sheet_name)
 
@@ -750,6 +735,10 @@ def import_dataloader(importer_directory, client_type, salesforce_type, operatio
 
         message = "Finished Import Process: " + bat_file + " for file: " + import_file
         print(message)
+
+    # Check if updaterequired
+    if operation == "Update" and updaterequired and not datafound:
+        raise Exception("Update operation and updaterequired but no data was found")
 
     return return_code + return_stdout + return_stderr
 
