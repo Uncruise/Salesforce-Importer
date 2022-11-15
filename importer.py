@@ -130,6 +130,9 @@ def main():
     if 'UpdateRequired' in client_subtype:
         updaterequired = True
 
+    if 'Manifest' in client_subtype:
+        wait_time = 30
+
     importer_root = ("C:\\repo\\Salesforce-Importer-Private\\Clients\\" + client_type +
                      "\\Salesforce-Importer")
     if '-rootdir' in sys.argv:
