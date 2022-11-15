@@ -697,6 +697,8 @@ def import_dataloader(importer_directory, client_type, salesforce_type, operatio
 
     for file_name in listdir(bat_path):
 
+        print('import_dataloader file_name: ' + file_name + ' operation: ' + operation)
+
         if not operation in file_name or ".sdl" not in file_name:
             continue
 
