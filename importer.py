@@ -702,13 +702,13 @@ def import_dataloader(importer_directory, client_type, salesforce_type, operatio
         if not operation in file_name or ".sdl" not in file_name:
             continue
 
-        print('import_dataloader: ' + 1)
+        print('import_dataloader: 1')
 
         # Check if associated csv has any data
         sheet_name = os.path.splitext(file_name)[0]
         import_file = join(import_path, sheet_name + ".csv")
 
-        print('import_dataloader: ' + 2)
+        print('import_dataloader: ' + import_file)
 
         # Check if updaterequired
         if updaterequired and (not os.path.exists(import_file) or not contains_data(import_file)):
