@@ -1,12 +1,12 @@
 #Mapping values
-#Thu Dec 02 16:03:50 PST 2021
+#Thu Nov 16 09:47:20 PST 2023
 Itinerary_Code__c=Itinerary_Code__c
+Itinerary_Embark__c=Itinerary_Embark__c
 Itinerary_Description__c=Itinerary_Description__c
 Name=Name
-Ship_Code__c=Ship__r\:Ship_Code__c
-Destination_Code__c=Destination_Code__c
-External_Id__c=External_Id__c
-Itinerary_Embark__c=Itinerary_Embark__c
 Itinerary_Disembark__c=Itinerary_Disembark__c
-Charter__c=Charter__c
-Possible_Charter__c=Possible_Charter__c
+Charter=Charter__c
+Destination_Code__c=Destination_Code__c
+Possible\ Charter=Possible_Charter__c
+External_Id__c=External_Id__c
+Ship__c=Ship__r\:Ship_Code__c
