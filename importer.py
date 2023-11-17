@@ -199,8 +199,6 @@ def main():
                                     interactivemode,
                                     displayalerts)
 
-    return
-
     # Check filename for operation
     insertOnly = False
     if "insert" in client_subtype.lower():
