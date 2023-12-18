@@ -10,3 +10,4 @@ Destination_Code__c=Destination_Code__c
 Possible\ Charter=Possible_Charter__c
 External_Id__c=External_Id__c
 Ship__c=Ship__r\:Ship_Code__c
+Cruise_Date_Closed__c=Cruise_Date_Closed__c
