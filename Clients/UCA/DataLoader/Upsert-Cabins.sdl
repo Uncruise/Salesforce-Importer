@@ -1,12 +1,12 @@
 #Mapping values
-#Thu Nov 18 12:25:18 PST 2021
+#Thu Nov 16 09:50:42 PST 2023
 Cruise_ID__c=Cruise_ID__c
 Category_Code__c=Category_Code__c
+Name=Name
 Cruise_ExternalId=Cruise__r\:External_Id__c
 Number_of_Passengers__c=Number_of_Passengers__c
 Max_Pax_Occupancy__c=Max_PAX_Occupancy__c
-Name=Name
+Cabin_Category__c=Cabin_Category__c
 Type__c=Type__c
 Unique_Id__c=Unique_Id__c
 FY_End__c=FY_End__c
-Cabin_Category__c=Cabin_Category__c

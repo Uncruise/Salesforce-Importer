@@ -93,6 +93,10 @@ def main():
     if '-enabledelete' in sys.argv:
         enabledelete = True
 
+    noexportpostgres = False
+    if '-noexportpostgres' in sys.argv:
+        noexportpostgres = True
+
     noexportodbc = False
     if '-noexportodbc' in sys.argv:
         noexportodbc = True
@@ -178,8 +182,17 @@ def main():
     # Export External Data
     status_export = ""
 
+    if not noexportpostgres:
+        print("\n\nExporter - Export External Data from Postgres\n\n")
+        status_export = export_postgres(importer_directory,
+                                    salesforce_type,
+                                    client_subtype,
+                                    client_emaillist,
+                                    interactivemode,
+                                    displayalerts)
+
     if not noexportodbc:
-        print("\n\nExporter - Export External Data\n\n")
+        print("\n\nExporter - Export External Data ODBC\n\n")
         status_export = export_odbc(importer_directory,
                                     salesforce_type,
                                     client_subtype,
@@ -858,8 +871,51 @@ def export_extractcontentexists(importer_directory, client_type, client_subtype)
 
     return True
 
+def export_postgres(importer_directory, salesforce_type, client_subtype, client_emaillist, interactivemode, displayalerts):
+    """Export out of Postgres"""
+
+    from os.path import exists
+    from subprocess import Popen, PIPE
+
+    exporter_directory = importer_directory.replace("Salesforce-Importer", "Postgres-Exporter")
+    if "\\Postgres-Exporter\\" in exporter_directory:
+        exporter_directory += "\\..\\..\\.."
+
+    interactive_flag = ""
+    if (interactivemode or displayalerts):
+        interactive_flag = "-interactivemode"
+    bat_file = exporter_directory + "\\exporter.bat {} {} iTravel {} {}".format(salesforce_type,
+                                                                     client_subtype,
+                                                                     client_emaillist,
+                                                                     interactive_flag)
+
+    return_code = ""
+    return_stdout = ""
+    return_stderr = ""
+
+    if not exists(exporter_directory):
+        print("Skip Postgres Export Process (export not detected)")
+    else:
+        message = "Starting Postgres Export Process: " + bat_file
+        print(message)
+        return_stdout += message + "\n"
+        export_process = Popen(bat_file, stdout=PIPE, stderr=PIPE)
+
+        stdout, stderr = export_process.communicate()
+
+        return_code += "\n\nexport_postgres (returncode): " + str(export_process.returncode)
+        return_stdout += "\n\nexport_postgres (stdout):\n" + stdout
+        return_stderr += "\n\nexport_postgres (stderr):\n" + stderr
+
+        if (export_process.returncode != 0
+                or contains_error(return_stdout)
+                or "We couldn't find the Java Runtime Environment (JRE)" in return_stdout):
+            raise Exception("Invalid Return Code", return_code + return_stdout + return_stderr)
+
+    return return_code + return_stdout + return_stderr
+
 def export_odbc(importer_directory, salesforce_type, client_subtype, interactivemode, displayalerts):
-    """Export out of Salesforce using DataLoader"""
+    """Export out of ODBC"""
 
     from os.path import exists
     from subprocess import Popen, PIPE
