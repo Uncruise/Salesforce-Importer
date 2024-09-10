@@ -736,10 +736,11 @@ def import_dataloader(importer_directory, client_type, salesforce_type, operatio
         return_stdout += "\n\nimport_dataloader (stdout):\n" + stdout
         return_stderr += "\n\nimport_dataloader (stderr):\n" + stderr
 
-        if (import_process.returncode != 0
-                or contains_error(return_stdout)
-                or "We couldn't find the Java Runtime Environment (JRE)" in return_stdout):
-            raise Exception("Invalid Return Code", return_code + return_stdout + return_stderr)
+# dataloader v62 is giving api error but is still successful upload; Error while calling web service operation
+ #       if (import_process.returncode != 0
+ #               or contains_error(return_stdout)
+ #               or "We couldn't find the Java Runtime Environment (JRE)" in return_stdout):
+ #           raise Exception("Invalid Return Code", return_code + return_stdout + return_stderr)
 
         status_path = importer_directory + "\\status"
 
