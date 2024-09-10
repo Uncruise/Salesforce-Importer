@@ -754,8 +754,8 @@ def import_dataloader(importer_directory, client_type, salesforce_type, operatio
   #              raise Exception("error file contains data: " + file_name_status_full, (
   #                  return_code + return_stdout + return_stderr))
 
-    message = "Finished Import Process: " + bat_file + " for file: " + import_file
-    print(message)
+   # message = "Finished Import Process: " + bat_file + " for file: " + import_file
+   # print(message)
 
     # Check if updaterequired
     if operation == "Update" and updaterequired and not datafound:
