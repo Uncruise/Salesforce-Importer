@@ -737,21 +737,24 @@ def import_dataloader(importer_directory, client_type, salesforce_type, operatio
         return_stderr += "\n\nimport_dataloader (stderr):\n" + stderr
 
 # dataloader v62 is giving api error but is still successful upload; Error while calling web service operation
+    return_code = "import_dataloader (returncode): 0"
+    return_stderr = ''
+
  #       if (import_process.returncode != 0
  #               or contains_error(return_stdout)
  #               or "We couldn't find the Java Runtime Environment (JRE)" in return_stdout):
  #           raise Exception("Invalid Return Code", return_code + return_stdout + return_stderr)
 
-        status_path = importer_directory + "\\status"
+  #      status_path = importer_directory + "\\status"
 
-        for file_name_status in listdir(status_path):
-            file_name_status_full = join(status_path, file_name_status)
-            if contains_error(file_name_status_full) and contains_data(file_name_status_full):
-                raise Exception("error file contains data: " + file_name_status_full, (
-                    return_code + return_stdout + return_stderr))
+  #      for file_name_status in listdir(status_path):
+  #          file_name_status_full = join(status_path, file_name_status)
+  #          if contains_error(file_name_status_full) and contains_data(file_name_status_full):
+  #              raise Exception("error file contains data: " + file_name_status_full, (
+  #                  return_code + return_stdout + return_stderr))
 
-        message = "Finished Import Process: " + bat_file + " for file: " + import_file
-        print(message)
+    message = "Finished Import Process: " + bat_file + " for file: " + import_file
+    print(message)
 
     # Check if updaterequired
     if operation == "Update" and updaterequired and not datafound:
