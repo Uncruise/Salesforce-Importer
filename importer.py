@@ -736,10 +736,10 @@ def import_dataloader(importer_directory, client_type, salesforce_type, operatio
         return_stdout += "\n\nimport_dataloader (stdout):\n" + stdout
         return_stderr += "\n\nimport_dataloader (stderr):\n" + stderr
 
-# dataloader v62 is giving api error but is still successful upload; Error while calling web service operation
-    return_code = "import_dataloader (returncode): 0"
-    return_stdout = ""
-    return_stderr = ""
+        # dataloader v62 is giving api error but is still successful upload; Error while calling web service operation
+        return_code = "import_dataloader (returncode): 0"
+        return_stdout = ""
+        return_stderr = ""
 
  #       if (import_process.returncode != 0
  #               or contains_error(return_stdout)
