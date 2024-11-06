@@ -13,8 +13,7 @@
             "args": [
                 "Prod"
                 ,"UCA"
-                ,"Manifests-Schedule_UpdateRequired"
-//                ,"SYNC-Update2of2"
+                ,"Cruises_Upsert"
                 ,"daveb@uncruise.com"
 //                ,"-insertattempts"
 //                ,"0"
@@ -23,12 +22,14 @@
 //                ,"C:\\repo\\Salesforce-Importer-Private"
                 ,"-noexportodbc"
                 ,"-noexportsf"
+                ,"-emailattachments"
+                ,"-interactivemode"
+                ,"-displayalerts"
 //                ,"-skipexcelrefresh"
                 ,"-waittime"
                 ,"30"
-                ,"-interactivemode"
                 ,"-location"
-                ,"Prod"
+                ,"Local"
             ],
         },
         {

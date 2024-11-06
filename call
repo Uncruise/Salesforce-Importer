@@ -1,0 +1,9 @@
+
+C:\repo\Salesforce-Importer>echo incoming Prod UCA Upsert-Cruises 
+incoming Prod UCA Upsert-Cruises
+
+C:\repo\Salesforce-Importer>set DATALOADER_BIN=C:\repo\Salesforce-Importer-Private\Clients\UCA\Salesforce-Importer\dependencies\salesforce.com\dataloader\v62.0.1\bin 
+
+C:\repo\Salesforce-Importer>cd C:\repo\Salesforce-Importer-Private\Clients\UCA\Salesforce-Importer\dependencies\salesforce.com\dataloader\v62.0.1\bin 
+
+C:\repo\Salesforce-Importer-Private\Clients\UCA\Salesforce-Importer\dependencies\salesforce.com\dataloader\v62.0.1\bin>call C:\repo\Salesforce-Importer-Private\Clients\UCA\Salesforce-Importer\dependencies\salesforce.com\dataloader\v62.0.1\bin\process.bat C:\repo\Salesforce-Importer-Private\Clients\UCA\Salesforce-Importer\Clients\UCA\DataLoader\ Upsert-Cruises_Prod 
