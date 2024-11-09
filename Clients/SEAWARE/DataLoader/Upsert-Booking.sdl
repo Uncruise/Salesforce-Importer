@@ -1,9 +1,9 @@
 Name
-StageName
-CloseDate
-ForecastCategory
-Booking_Number_Seaware__c
-Cruise_ID__c
-Total_Gross_Price_Migrated__c
-Total_Commission_Migrated__c	
-Reservation_Sync_Request__c			
+StageName=StageName
+CloseDate=CloseDate
+ForecastCategory=ForecastCategory
+Booking_Number_Seaware__c=Booking_Number_Seaware__c
+Cruise_ID__c=Cruise_ID__c
+Total_Gross_Price_Migrated__c=Total_Gross_Price_Migrated__c
+Total_Commission_Migrated__c=Total_Commission_Migrated__c
+Reservation_Sync_Request__c=Reservation_Sync_Request__c
