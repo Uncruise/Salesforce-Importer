@@ -3,7 +3,6 @@
 Name=Name
 StageName=StageName
 CloseDate=CloseDate
-ForecastCategory=ForecastCategory
 Booking_Number_Seaware__c=Booking_Number_Seaware__c
 Cruise_ID__c=Cruise_ID__c
 Total_Gross_Price_Migrated__c=Total_Gross_Price_Migrated__c
