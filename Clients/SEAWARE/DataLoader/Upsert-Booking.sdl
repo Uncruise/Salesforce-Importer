@@ -4,7 +4,6 @@ Name=Name
 StageName=StageName
 CloseDate=CloseDate
 Booking_Number_Seaware__c=Booking_Number_Seaware__c
-Cruise_ID__c=Cruise_ID__c
 Total_Gross_Price_Migrated__c=Total_Gross_Price_Migrated__c
 Total_Commission_Migrated__c=Total_Commission_Migrated__c
 Total_Payments_Received_Migrated__c=Total_Payments_Received_Migrated__c
