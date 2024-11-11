@@ -60,7 +60,7 @@
                 <entry key="sfdc.timeoutSecs" value="600"/>
                 <entry key="sfdc.loadBatchSize" value="200"/>
                 <entry key="sfdc.externalIdField" value="CustomerID__c"/>
-                <entry key="sfdc.entity" value="Contat"/>
+                <entry key="sfdc.entity" value="Contact_Sync__c"/>
                 <entry key="process.operation" value="upsert"/>
                 <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE\Salesforce-Importer\Clients\SEAWARE\DataLoader\Upsert-Guest.sdl"/>
                 <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE\Salesforce-Importer\Clients\SEAWARE\Import\Upsert-Guest.csv"/>
