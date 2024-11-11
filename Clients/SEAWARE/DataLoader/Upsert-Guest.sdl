@@ -7,4 +7,5 @@ Sync_Date__c=Sync_Date__c
 FirstName__c=FirstName__c
 LastName__c=LastName__c
 MiddleName__c=MiddleName__c
+Birthdate__c=Birthdate__c
 Title__c=Title__c
