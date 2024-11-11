@@ -1,6 +1,7 @@
 #Mapping values
 #Sat Nov 20 14:18:58 PST 2021
 CustomerID__c=CustomerID__c
+Seaware_Id__c=Seaware_Id__c
 Sync_Date__c=Sync_Date__c
 MiddleName__c=MiddleName__c
 Title__c=Title__c
