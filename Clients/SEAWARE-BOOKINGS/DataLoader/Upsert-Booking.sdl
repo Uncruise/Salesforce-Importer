@@ -20,3 +20,6 @@ TotalSavings__c=TotalSavings__c
 PortCharges__c=PortCharges__c
 Total_Base_Cruise__c=Total_Base_Cruise__c
 Total_Base_Hotel__c=Total_Base_Hotel__c
+Total_Miscellaneous__c=Total_Miscellaneous__c
+Total_Pre_paid_Gratuities__c=Total_Pre_paid_Gratuities__c
+Total_Base_Package__c=Total_Base_Package__c
