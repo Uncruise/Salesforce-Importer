@@ -1,0 +1,10 @@
+#Mapping values
+#Sat Nov 20 14:18:58 PST 2021
+Cruise_ID__c=Cruise_ID__c
+Type__c=Type__c
+Cruise_ExternalId=Cruise__r\:External_Id__c
+Booking_ExternalId=Booking__r\:Booking_Number_Seaware__c
+Number_of_Passengers__c=Number_of_Passengers__c
+Name=Name
+Category_Code__c=Category_Code__c
+Unique_Id__c=Unique_Id__c

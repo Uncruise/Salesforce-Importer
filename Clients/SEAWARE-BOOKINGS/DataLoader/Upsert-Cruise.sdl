@@ -1,0 +1,6 @@
+#Mapping values
+#Sat Nov 20 14:18:58 PST 2021
+Name=Name
+External_Id__c=External_Id__c
+Destination_Code__c=Destination_Code__c
+Ship__c=Ship__r\:Ship_Code__c
