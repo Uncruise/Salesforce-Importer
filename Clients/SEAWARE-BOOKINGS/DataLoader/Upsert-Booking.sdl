@@ -29,3 +29,4 @@ GroupID__c=GroupID__c
 Group_Name__c=Group_Name__c
 Charter__c=Charter__c
 Group_Revenue__c=Group_Revenue__c
+Group_Type__c=Group_Type__c
