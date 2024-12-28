@@ -1,0 +1,7 @@
+#Mapping values
+#Sat Nov 20 14:18:58 PST 2021
+Name=Name
+External_Id__c=External_Id__c
+Booking_ExternalId=Booking__r\:Booking_Number_Seaware__c
+Cabin_ExternalId=Cabin__r\:External_Id__c
+RecordTypeId=RecordTypeId
