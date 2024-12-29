@@ -3,5 +3,5 @@
 Name=Name
 External_Id__c=External_Id__c
 Booking_ExternalId=Booking__r\:Booking_Number_Seaware__c
-Cabin_ExternalId=Cabin__r\:External_Id__c
+Cabin_ExternalId=Cabin__r\:Unique_Id__c
 RecordTypeId=RecordTypeId
