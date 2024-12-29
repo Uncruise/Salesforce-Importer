@@ -5,3 +5,4 @@ External_Id__c=External_Id__c
 Booking_ExternalId=Booking__r\:Booking_Number_Seaware__c
 Cabin_ExternalId=Cabin__r\:Unique_Id__c
 RecordTypeId=RecordTypeId
+Item_Stage__c=Item_Stage__c
