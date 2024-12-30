@@ -46,11 +46,11 @@
             </map>
         </property>
     </bean>
-    <bean id="Upsert-ItemCruise_Prod"
+    <bean id="Step1-Upsert-ItemCruise_Prod"
           class="com.salesforce.dataloader.process.ProcessRunner"
           scope="prototype">
         <description>Update for Booking.</description>
-        <property name="name" value="Upsert-ItemCruise_Prod"/>
+        <property name="name" value="Step1-Upsert-ItemCruise_Prod"/>
         <property name="configOverrideMap">
             <map>
                 <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com"/> 
@@ -62,18 +62,18 @@
                 <entry key="sfdc.externalIdField" value="External_Id__c"/>
                 <entry key="sfdc.entity" value="Item__c"/>
                 <entry key="process.operation" value="upsert"/>
-                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Upsert-ItemCruise.sdl"/>
-                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Upsert-ItemCruise.csv"/>
+                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step1-Upsert-ItemCruise.sdl"/>
+                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step1-Upsert-ItemCruise.csv"/>
                 <entry key="dataAccess.type" value="csvRead"/>
                 <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800"/>
             </map>
         </property>
     </bean>
-    <bean id="Upsert-ItemContactCruise_Prod"
+    <bean id="Step2-Upsert-ItemContactCruise_Prod"
           class="com.salesforce.dataloader.process.ProcessRunner"
           scope="prototype">
         <description>Update for Booking.</description>
-        <property name="name" value="Upsert-ItemContactCruise_Prod"/>
+        <property name="name" value="Step2-Upsert-ItemContactCruise_Prod"/>
         <property name="configOverrideMap">
             <map>
                 <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com"/> 
@@ -85,8 +85,8 @@
                 <entry key="sfdc.externalIdField" value="External_Id__c"/>
                 <entry key="sfdc.entity" value="Item_Contact__c"/>
                 <entry key="process.operation" value="upsert"/>
-                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Upsert-ItemContactCruise.sdl"/>
-                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Upsert-ItemContactCruise.csv"/>
+                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step2-Upsert-ItemContactCruise.sdl"/>
+                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step2-Upsert-ItemContactCruise.csv"/>
                 <entry key="dataAccess.type" value="csvRead"/>
                 <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800"/>
             </map>
