@@ -7,3 +7,4 @@ Cabin_ExternalId=Cabin__r\:Unique_Id__c
 RecordTypeId=RecordTypeId
 Item_Stage__c=Item_Stage__c
 Seaware_Sync__c=Seaware_Sync__c
+Category_Name__c=Category_Name__c
