@@ -9,3 +9,7 @@ MiddleName__c=MiddleName__c
 Birthdate__c=Birthdate__c
 Title__c=Title__c
 Gender__c=Gender__c
+Emergency_Contact_Name__c=Emergency_Contact_Name__c
+Emergency_Contact_Phone__c=Emergency_Contact_Phone__c
+Emergency_Contact_Email__c=Emergency_Contact_Email__c
+Relationship__c=Relationship__c
