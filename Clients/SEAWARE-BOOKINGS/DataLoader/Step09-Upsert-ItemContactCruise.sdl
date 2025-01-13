@@ -6,3 +6,4 @@ guest_client_altId=Contact__r\:CustomerID__c
 Cabin_ExternalId=Cabin__r\:Unique_Id__c
 Pax_Id__c=Pax_Id__c
 ItemContact_External_Id__c=External_Id__c
+SyncDate__c=SyncDate__c
