@@ -266,7 +266,7 @@
                 <entry key="process.encryptionKeyFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt"/>
                 <entry key="sfdc.timeoutSecs" value="600"/>
                 <entry key="sfdc.loadBatchSize" value="50"/>
-                <entry key="sfdc.externalIdField" value="External_Id__c"/>
+                <entry key="sfdc.externalIdField" value="Segment_Key__c"/>
                 <entry key="sfdc.entity" value="Item_Segment__c"/>
                 <entry key="process.operation" value="upsert"/>
                 <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step13-Upsert-Item_Segment.sdl"/>
