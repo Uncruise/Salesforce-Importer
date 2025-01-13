@@ -1,7 +1,7 @@
 #Mapping values
 #Sat Nov 20 14:18:58 PST 2021
-External_Id__c=External_Id__c
-Item_External_Id__c=Item__r\:External_Id__c
+Item_External_Id__c=Segment_Key__c
+External_Id__c=Item__r\:External_Id__c
 Item_ExternalId__c=Item_External_Id__c
 Arrival_DateTime__c=Arrival_DateTime__c
 Departure_DateTime__c=Departure_DateTime__c
