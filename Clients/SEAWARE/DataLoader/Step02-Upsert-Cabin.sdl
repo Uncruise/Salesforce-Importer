@@ -1,0 +1,9 @@
+#Mapping values
+#Sat Nov 20 14:18:58 PST 2021
+Cruise_ID__c=Cruise_ID__c
+Type__c=Type__c
+External_Id__c=Cruise__r\:External_Id__c
+Booking__c=Booking__c
+Number_of_Passengers__c=Number_of_Passengers__c
+cabin_number=Name
+Unique_Id__c=Unique_Id__c
