@@ -7,3 +7,5 @@ Booking__c=Booking__c
 Number_of_Passengers__c=Number_of_Passengers__c
 cabin_number=Name
 Unique_Id__c=Unique_Id__c
+cabin_category_code=Category_Code__c
+cabin_category_description=Category_Description__c
