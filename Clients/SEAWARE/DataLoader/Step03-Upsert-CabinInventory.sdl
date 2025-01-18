@@ -6,3 +6,4 @@ cabin_number=Name
 Unique_Id__c=Unique_Id__c
 cabin_category_code=Category_Code__c
 cabin_category_description=Category_Description__c
+Type__c=Type__c
