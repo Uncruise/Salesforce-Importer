@@ -31,3 +31,4 @@ Charter__c=Charter__c
 Group_Revenue__c=Group_Revenue__c
 Group_Type__c=Group_Type__c
 Reservation_Sync_Request__c=Reservation_Sync_Request__c
+RESERVATION_ReferralSource.key=Referral_Source__c
