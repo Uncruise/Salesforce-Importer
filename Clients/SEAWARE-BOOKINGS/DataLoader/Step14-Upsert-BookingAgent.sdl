@@ -1,0 +1,7 @@
+#Mapping values
+#Sat Nov 20 14:18:58 PST 2021
+reservation=Booking_External_Id__c
+Agent_External_Id=Contact_External_Id__c
+Sync_Date__c=Sync_Date__c
+Role__c=Role__c
+External_Id__c=External_Id__c
