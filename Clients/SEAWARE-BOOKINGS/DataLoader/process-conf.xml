@@ -200,8 +200,8 @@
                 <entry key="sfdc.externalIdField" value="External_Id__c"/>
                 <entry key="sfdc.entity" value="Booking_Contact_Role_Sync__c"/>
                 <entry key="process.operation" value="upsert"/>
-                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step07-Upsert-BookingAgent.sdl"/>
-                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step07-Upsert-BookingAgent.csv"/>
+                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step14-Upsert-BookingAgent.sdl"/>
+                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step14-Upsert-BookingAgent.csv"/>
                 <entry key="dataAccess.type" value="csvRead"/>
                 <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800"/>
             </map>
