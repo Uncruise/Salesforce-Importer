@@ -1,0 +1,14 @@
+#Mapping values
+#Sat Nov 20 14:18:58 PST 2021
+Name=Name
+Unique_Id__c=Unique_Id__c
+Booking_ExternalId=Booking__r\:Booking_Number_Seaware__c
+ItemContact_External_Id__c=Item_Contact__r\:External_Id__c
+Item_External_Id__c=Item__r\:External_Id__c
+Type__c=Type__c
+Type_Code__c=Type_Code__c
+Description__c=Description__c
+Text__c=Text__c
+Code__c=Code__c
+FirstName__C=FirstName__C
+LastName__c=LastName__c
