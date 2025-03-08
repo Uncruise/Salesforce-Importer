@@ -4,4 +4,4 @@ Name=Name
 Type__c=Type__c
 Code__c=Code__c
 External_Id__c=External_Id__c
-Account__c=Account__r\:Seaware_Id__c
+Seaware_Id__c=Account__r\:Seaware_Id__c
