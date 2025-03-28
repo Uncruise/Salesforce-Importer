@@ -5,6 +5,6 @@ External_Id__c=External_Id__c
 Destination_Code__c=Destination_Code__c
 Itinerary_Description__c=Itinerary_Description__c
 Itinerary_Code__c=Itinerary_Code__c
-Itinerary_Disembark__c-Itinerary_Disembark__c
+Itinerary_Disembark__c=Itinerary_Disembark__c
 Itinerary_Embark__c=Itinerary_Embark__c
 Ship__c=Ship__r\:Ship_Code__c
