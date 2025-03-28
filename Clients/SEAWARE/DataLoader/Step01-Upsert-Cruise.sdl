@@ -2,4 +2,8 @@
 #Sat Nov 20 14:18:58 PST 2021
 Name=Name
 External_Id__c=External_Id__c
+Itinerary_Description__c=Itinerary_Description__c
+Itinerary_Code__c=Itinerary_Code__c
+Itinerary_Disembark__c-Itinerary_Disembark__c
+Itinerary_Embark__c=Itinerary_Embark__c
 ShipCode=Ship__r\:Ship_Code__c
