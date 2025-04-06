@@ -1,0 +1,16 @@
+#Mapping values
+#Sat Nov 20 14:18:58 PST 2021
+Item_Name=Name
+Seaware_Sync__c=Seaware_Sync__c
+External_Id__c=External_Id__c
+reservation=Booking__r\:Booking_Number_Seaware__c
+Item_Stage__c=Item_Stage__c
+Item_Type__c=Item_Type__c
+RecordTypeId=RecordTypeId
+End_Date__c=End_Date__c
+Start_Date__c=Start_Date__c
+Airline__c=Airline__c
+Airline_Code__c=Airline_Code__c
+Flight_Number__c=Flight_Number__c
+Arrival_DateTime__c=Arrival_DateTime__c
+Departure_DateTime__c=Departure_DateTime__c
