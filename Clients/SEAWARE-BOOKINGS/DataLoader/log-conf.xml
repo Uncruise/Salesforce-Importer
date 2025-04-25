@@ -3,6 +3,12 @@
   <appenders>
     <File name="fileAppender" fileName="${sys:java.io.tmpdir}/sdl.log" append="true">
       <PatternLayout pattern="%d %-5p [%t] %C{2} %M (%F:%L) - %m%n"/>
+
+      <!-- Trigger roll over when file reaches 10 MB -->
+      <SizeBasedTriggeringPolicy size="10MB"/>
+      
+      <!-- Keep up to 5 old log files -->
+      <DefaultRolloverStrategy max="5"/>
     </File>
     <CONSOLE name="STDOUT" target="SYSTEM_OUT">
       <PatternLayout pattern="%d %-5p [%t] %C{2} %M (%F:%L) - %m%n"/>
