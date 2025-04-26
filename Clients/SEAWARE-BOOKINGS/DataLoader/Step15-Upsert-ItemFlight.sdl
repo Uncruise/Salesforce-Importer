@@ -14,5 +14,3 @@ Airline_Code__c=Airline_Code__c
 To__c=To__c
 From__c=From__c
 Flight_Number__c=Flight_Number__c
-Arrival_DateTime__c=Arrival_DateTime__c
-Departure_DateTime__c=Departure_DateTime__c
