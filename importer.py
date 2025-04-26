@@ -426,7 +426,18 @@ def refresh_and_export(importer_directory, salesforce_type,
     refresh_status = "refresh_and_export\n"
 
     excel_connection = win32.gencache.EnsureDispatch("Excel.Application")
-    excel_connection.Visible = interactivemode
+
+    # Prevent pop-up alerts (e.g., "Do you want to save?")
+    excel_connection.DisplayAlerts = displayalerts
+
+    # Speed up performance by skipping screen redraws
+    excel_connection.ScreenUpdating = interactivemode
+
+    # Suppress *all* user interaction & UI prompts
+    excel_connection.Interactive = interactivemode
+
+    # Optional: hide Excel window (good for background automation)
+    excel_connection.Visible = interactivemode  # or True if debugging
 
     excel_file_path = importer_directory + "\\"
     excel_file = excel_file_path + client_type + "-" + client_subtype + "_" + salesforce_type + ".xlsx"
@@ -576,7 +587,7 @@ def refresh_and_export(importer_directory, salesforce_type,
                         os.remove(sheet_file)
 
                     # By Design - set displayalerts before saveas so not prompting w/ save dialogs during automation.  Moved this here so that any RefreshAll errors will still surface and cause the refresh process not to finish thus an error will be detected
-                    excel_connection.DisplayAlerts = displayalerts
+                    #excel_connection.DisplayAlerts = displayalerts
 
                     if not sheet_file == "":
                         workbook.SaveAs(sheet_file, 6)
