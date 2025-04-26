@@ -627,6 +627,13 @@ def refresh_and_export(importer_directory, salesforce_type,
             if workbook_successful:
                 break;
 
+
+    # Reset before quit
+    excel_connection.DisplayAlerts = True
+    excel_connection.ScreenUpdating = True
+    excel_connection.Interactive = True
+    excel_connection.Visible = True
+
     excel_connection.Quit()
 
     return refresh_status
