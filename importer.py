@@ -428,16 +428,16 @@ def refresh_and_export(importer_directory, salesforce_type,
     excel_connection = win32.gencache.EnsureDispatch("Excel.Application")
 
     # Prevent pop-up alerts (e.g., "Do you want to save?")
-    excel_connection.DisplayAlerts = displayalerts
+    excel_connection.DisplayAlerts = False
 
     # Speed up performance by skipping screen redraws
-    excel_connection.ScreenUpdating = interactivemode
+    excel_connection.ScreenUpdating = False
 
     # Suppress *all* user interaction & UI prompts
-    excel_connection.Interactive = interactivemode
+    excel_connection.Interactive = False
 
     # Optional: hide Excel window (good for background automation)
-    excel_connection.Visible = interactivemode  # or True if debugging
+    excel_connection.Visible = False  # or True if debugging
 
     excel_file_path = importer_directory + "\\"
     excel_file = excel_file_path + client_type + "-" + client_subtype + "_" + salesforce_type + ".xlsx"
