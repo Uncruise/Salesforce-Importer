@@ -620,7 +620,7 @@ def send_email(client_emaillist, subject, file_path, emailattachments, log_path)
     print message
 
     send_to = client_emaillist.split(";")
-    send_from = 'db.powerbi@501commons.org'
+    send_from = 'daveb@uncruise.com'
     server = "smtp.office365.com"
 
     #https://stackoverflow.com/questions/3362600/how-to-send-email-attachments
