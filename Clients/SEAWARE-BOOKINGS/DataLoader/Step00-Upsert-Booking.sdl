@@ -33,3 +33,4 @@ Group_Type__c=Group_Type__c
 RESERVATION_ReferralSource.key=Referral_Source__c
 ReservationOwner=SalesCounselor__c
 ReservationOwnerOther=Sales_Counselor_Booked__c
+Travels_With_Sync__c=Travels_With_Sync__c
