@@ -1,0 +1,14 @@
+@echo off
+
+set IMPORT_WAITTIME=-waittime 300
+set IMPORT_NOREFRESH=
+set IMPORT_NOUPDATE=
+set IMPORT_NOEXPORTPOSTGRES=-noexportpostgres
+set IMPORT_NOEXPORTODBC=-noexportodbc
+set IMPORT_NOEXPORTSF=-noexportsf
+set IMPORT_INSERTATTEMPTS=
+set IMPORT_EMAILATTACHMENTS=-emailattachments
+set IMPORT_INTERACTIVEMODE=
+set IMPORT_DISPLAYALERTS=
+
+call "%IMPORTER_DIRECTORY%\..\importer-docker.bat" 
