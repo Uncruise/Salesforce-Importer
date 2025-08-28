@@ -1,6 +1,6 @@
 @echo off
 
-set IMPORT_WAITTIME=-waittime 1500
+set IMPORT_WAITTIME=-waittime 1800
 set IMPORT_NOREFRESH=
 set IMPORT_NOUPDATE=
 set IMPORT_NOEXPORTPOSTGRES=-noexportpostgres
