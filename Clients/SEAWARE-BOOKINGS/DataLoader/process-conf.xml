@@ -1,353 +1,301 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
     <bean id="Step01-Upsert-Cruise_Prod"
-        class="com.salesforce.dataloader.process.ProcessRunner"
-        scope="prototype">
+          class="com.salesforce.dataloader.process.ProcessRunner"
+          scope="prototype">
         <description>Update for Booking.</description>
-        <property name="name" value="Step01-Upsert-Cruise_Prod" />
+        <property name="name" value="Step01-Upsert-Cruise_Prod"/>
         <property name="configOverrideMap">
             <map>
-                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com" />
-                <entry key="sfdc.username" value="daveb@uncruise.com" />
-                <entry key="sfdc.password"
-                    value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612" />
-                <entry key="process.encryptionKeyFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt" />
-                <entry key="sfdc.timeoutSecs" value="600" />
-                <entry key="sfdc.loadBatchSize" value="50" />
-                <entry key="sfdc.externalIdField" value="External_Id__c" />
-                <entry key="sfdc.entity" value="Cruise__c" />
-                <entry key="process.operation" value="upsert" />
-                <entry key="process.mappingFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step01-Upsert-Cruise.sdl" />
-                <entry key="dataAccess.name"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step01-Upsert-Cruise.csv" />
-                <entry key="dataAccess.type" value="csvRead" />
-                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800" />
+                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com"/> 
+                <entry key="sfdc.username" value="daveb@uncruise.com"/>
+                <entry key="sfdc.password" value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612"/>
+                <entry key="process.encryptionKeyFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt"/>
+                <entry key="sfdc.timeoutSecs" value="600"/>
+                <entry key="sfdc.loadBatchSize" value="50"/>
+                <entry key="sfdc.externalIdField" value="External_Id__c"/>
+                <entry key="sfdc.entity" value="Cruise__c"/>
+                <entry key="process.operation" value="upsert"/>
+                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step01-Upsert-Cruise.sdl"/>
+                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step01-Upsert-Cruise.csv"/>
+                <entry key="dataAccess.type" value="csvRead"/>
+                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800"/>
             </map>
         </property>
     </bean>
     <bean id="Step02-Upsert-Cabin_Prod"
-        class="com.salesforce.dataloader.process.ProcessRunner"
-        scope="prototype">
+          class="com.salesforce.dataloader.process.ProcessRunner"
+          scope="prototype">
         <description>Update for Booking.</description>
-        <property name="name" value="Step02-Upsert-Cabin_Prod" />
+        <property name="name" value="Step02-Upsert-Cabin_Prod"/>
         <property name="configOverrideMap">
             <map>
-                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com" />
-                <entry key="sfdc.username" value="daveb@uncruise.com" />
-                <entry key="sfdc.password"
-                    value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612" />
-                <entry key="process.encryptionKeyFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt" />
-                <entry key="sfdc.timeoutSecs" value="600" />
-                <entry key="sfdc.loadBatchSize" value="50" />
-                <entry key="sfdc.externalIdField" value="Unique_Id__c" />
-                <entry key="sfdc.entity" value="Cabin__c" />
-                <entry key="process.operation" value="upsert" />
-                <entry key="process.mappingFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step02-Upsert-Cabin.sdl" />
-                <entry key="dataAccess.name"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step02-Upsert-Cabin.csv" />
-                <entry key="dataAccess.type" value="csvRead" />
-                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800" />
+                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com"/> 
+                <entry key="sfdc.username" value="daveb@uncruise.com"/>
+                <entry key="sfdc.password" value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612"/>
+                <entry key="process.encryptionKeyFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt"/>
+                <entry key="sfdc.timeoutSecs" value="600"/>
+                <entry key="sfdc.loadBatchSize" value="50"/>
+                <entry key="sfdc.externalIdField" value="Unique_Id__c"/>
+                <entry key="sfdc.entity" value="Cabin__c"/>
+                <entry key="process.operation" value="upsert"/>
+                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step02-Upsert-Cabin.sdl"/>
+                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step02-Upsert-Cabin.csv"/>
+                <entry key="dataAccess.type" value="csvRead"/>
+                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800"/>
             </map>
         </property>
     </bean>
     <bean id="Step10-Upsert-Remark_Prod"
-        class="com.salesforce.dataloader.process.ProcessRunner"
-        scope="prototype">
+          class="com.salesforce.dataloader.process.ProcessRunner"
+          scope="prototype">
         <description>Update for Booking.</description>
-        <property name="name" value="Step10-Upsert-Remark_Prod" />
+        <property name="name" value="Step10-Upsert-Remark_Prod"/>
         <property name="configOverrideMap">
             <map>
-                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com" />
-                <entry key="sfdc.username" value="daveb@uncruise.com" />
-                <entry key="sfdc.password"
-                    value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612" />
-                <entry key="process.encryptionKeyFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt" />
-                <entry key="sfdc.timeoutSecs" value="600" />
-                <entry key="sfdc.loadBatchSize" value="50" />
-                <entry key="sfdc.externalIdField" value="Unique_Id__c" />
-                <entry key="sfdc.entity" value="Booking_Remark__c" />
-                <entry key="process.operation" value="upsert" />
-                <entry key="process.mappingFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step10-Upsert-Remark.sdl" />
-                <entry key="dataAccess.name"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step10-Upsert-Remark.csv" />
-                <entry key="dataAccess.type" value="csvRead" />
-                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800" />
+                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com"/> 
+                <entry key="sfdc.username" value="daveb@uncruise.com"/>
+                <entry key="sfdc.password" value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612"/>
+                <entry key="process.encryptionKeyFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt"/>
+                <entry key="sfdc.timeoutSecs" value="600"/>
+                <entry key="sfdc.loadBatchSize" value="50"/>
+                <entry key="sfdc.externalIdField" value="Unique_Id__c"/>
+                <entry key="sfdc.entity" value="Booking_Remark__c"/>
+                <entry key="process.operation" value="upsert"/>
+                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step10-Upsert-Remark.sdl"/>
+                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step10-Upsert-Remark.csv"/>
+                <entry key="dataAccess.type" value="csvRead"/>
+                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800"/>
             </map>
         </property>
     </bean>
     <bean id="Step08-Upsert-ItemCruise_Prod"
-        class="com.salesforce.dataloader.process.ProcessRunner"
-        scope="prototype">
+          class="com.salesforce.dataloader.process.ProcessRunner"
+          scope="prototype">
         <description>Update for Booking.</description>
-        <property name="name" value="Step08-Upsert-ItemCruise_Prod" />
+        <property name="name" value="Step08-Upsert-ItemCruise_Prod"/>
         <property name="configOverrideMap">
             <map>
-                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com" />
-                <entry key="sfdc.username" value="daveb@uncruise.com" />
-                <entry key="sfdc.password"
-                    value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612" />
-                <entry key="process.encryptionKeyFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt" />
-                <entry key="sfdc.timeoutSecs" value="600" />
-                <entry key="sfdc.loadBatchSize" value="50" />
-                <entry key="sfdc.externalIdField" value="External_Id__c" />
-                <entry key="sfdc.entity" value="Item__c" />
-                <entry key="process.operation" value="upsert" />
-                <entry key="process.mappingFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step08-Upsert-ItemCruise.sdl" />
-                <entry key="dataAccess.name"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step08-Upsert-ItemCruise.csv" />
-                <entry key="dataAccess.type" value="csvRead" />
-                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800" />
+                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com"/> 
+                <entry key="sfdc.username" value="daveb@uncruise.com"/>
+                <entry key="sfdc.password" value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612"/>
+                <entry key="process.encryptionKeyFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt"/>
+                <entry key="sfdc.timeoutSecs" value="600"/>
+                <entry key="sfdc.loadBatchSize" value="50"/>
+                <entry key="sfdc.externalIdField" value="External_Id__c"/>
+                <entry key="sfdc.entity" value="Item__c"/>
+                <entry key="process.operation" value="upsert"/>
+                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step08-Upsert-ItemCruise.sdl"/>
+                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step08-Upsert-ItemCruise.csv"/>
+                <entry key="dataAccess.type" value="csvRead"/>
+                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800"/>
             </map>
         </property>
     </bean>
     <bean id="Step09-Upsert-ItemContactCruise_Prod"
-        class="com.salesforce.dataloader.process.ProcessRunner"
-        scope="prototype">
+          class="com.salesforce.dataloader.process.ProcessRunner"
+          scope="prototype">
         <description>Update for Booking.</description>
-        <property name="name" value="Step09-Upsert-ItemContactCruise_Prod" />
+        <property name="name" value="Step09-Upsert-ItemContactCruise_Prod"/>
         <property name="configOverrideMap">
             <map>
-                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com" />
-                <entry key="sfdc.username" value="daveb@uncruise.com" />
-                <entry key="sfdc.password"
-                    value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612" />
-                <entry key="process.encryptionKeyFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt" />
-                <entry key="sfdc.timeoutSecs" value="600" />
-                <entry key="sfdc.loadBatchSize" value="50" />
-                <entry key="sfdc.externalIdField" value="External_Id__c" />
-                <entry key="sfdc.entity" value="Item_Contact__c" />
-                <entry key="process.operation" value="upsert" />
-                <entry key="process.mappingFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step09-Upsert-ItemContactCruise.sdl" />
-                <entry key="dataAccess.name"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step09-Upsert-ItemContactCruise.csv" />
-                <entry key="dataAccess.type" value="csvRead" />
-                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800" />
+                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com"/> 
+                <entry key="sfdc.username" value="daveb@uncruise.com"/>
+                <entry key="sfdc.password" value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612"/>
+                <entry key="process.encryptionKeyFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt"/>
+                <entry key="sfdc.timeoutSecs" value="600"/>
+                <entry key="sfdc.loadBatchSize" value="50"/>
+                <entry key="sfdc.externalIdField" value="External_Id__c"/>
+                <entry key="sfdc.entity" value="Item_Contact__c"/>
+                <entry key="process.operation" value="upsert"/>
+                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step09-Upsert-ItemContactCruise.sdl"/>
+                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step09-Upsert-ItemContactCruise.csv"/>
+                <entry key="dataAccess.type" value="csvRead"/>
+                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800"/>
             </map>
         </property>
     </bean>
     <bean id="Step00-Upsert-Booking_Prod"
-        class="com.salesforce.dataloader.process.ProcessRunner"
-        scope="prototype">
+          class="com.salesforce.dataloader.process.ProcessRunner"
+          scope="prototype">
         <description>Update for Booking.</description>
-        <property name="name" value="Step00-Upsert-Booking_Prod" />
+        <property name="name" value="Step00-Upsert-Booking_Prod"/>
         <property name="configOverrideMap">
             <map>
-                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com" />
-                <entry key="sfdc.username" value="daveb@uncruise.com" />
-                <entry key="sfdc.password"
-                    value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612" />
-                <entry key="process.encryptionKeyFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt" />
-                <entry key="sfdc.timeoutSecs" value="600" />
-                <entry key="sfdc.loadBatchSize" value="50" />
-                <entry key="sfdc.externalIdField" value="Booking_Number_Seaware__c" />
-                <entry key="sfdc.entity" value="Opportunity" />
-                <entry key="process.operation" value="upsert" />
-                <entry key="process.mappingFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step00-Upsert-Booking.sdl" />
-                <entry key="dataAccess.name"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step00-Upsert-Booking.csv" />
-                <entry key="dataAccess.type" value="csvRead" />
-                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800" />
+                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com"/> 
+                <entry key="sfdc.username" value="daveb@uncruise.com"/>
+                <entry key="sfdc.password" value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612"/>
+                <entry key="process.encryptionKeyFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt"/>
+                <entry key="sfdc.timeoutSecs" value="600"/>
+                <entry key="sfdc.loadBatchSize" value="50"/>
+                <entry key="sfdc.externalIdField" value="Booking_Number_Seaware__c"/>
+                <entry key="sfdc.entity" value="Opportunity"/>
+                <entry key="process.operation" value="upsert"/>
+                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step00-Upsert-Booking.sdl"/>
+                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step00-Upsert-Booking.csv"/>
+                <entry key="dataAccess.type" value="csvRead"/>
+                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800"/>
             </map>
         </property>
     </bean>
     <bean id="Step07-Upsert-BookingGuest_Prod"
-        class="com.salesforce.dataloader.process.ProcessRunner"
-        scope="prototype">
+          class="com.salesforce.dataloader.process.ProcessRunner"
+          scope="prototype">
         <description>Update for Booking.</description>
-        <property name="name" value="Step07-Upsert-BookingGuest_Prod" />
+        <property name="name" value="Step07-Upsert-BookingGuest_Prod"/>
         <property name="configOverrideMap">
             <map>
-                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com" />
-                <entry key="sfdc.username" value="daveb@uncruise.com" />
-                <entry key="sfdc.password"
-                    value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612" />
-                <entry key="process.encryptionKeyFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt" />
-                <entry key="sfdc.timeoutSecs" value="600" />
-                <entry key="sfdc.loadBatchSize" value="50" />
-                <entry key="sfdc.externalIdField" value="External_Id__c" />
-                <entry key="sfdc.entity" value="Booking_Contact_Role_Sync__c" />
-                <entry key="process.operation" value="upsert" />
-                <entry key="process.mappingFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step07-Upsert-BookingGuest.sdl" />
-                <entry key="dataAccess.name"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step07-Upsert-BookingGuest.csv" />
-                <entry key="dataAccess.type" value="csvRead" />
-                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800" />
+                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com"/> 
+                <entry key="sfdc.username" value="daveb@uncruise.com"/>
+                <entry key="sfdc.password" value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612"/>
+                <entry key="process.encryptionKeyFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt"/>
+                <entry key="sfdc.timeoutSecs" value="600"/>
+                <entry key="sfdc.loadBatchSize" value="50"/>
+                <entry key="sfdc.externalIdField" value="External_Id__c"/>
+                <entry key="sfdc.entity" value="Booking_Contact_Role_Sync__c"/>
+                <entry key="process.operation" value="upsert"/>
+                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step07-Upsert-BookingGuest.sdl"/>
+                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step07-Upsert-BookingGuest.csv"/>
+                <entry key="dataAccess.type" value="csvRead"/>
+                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800"/>
             </map>
         </property>
     </bean>
     <bean id="Step14-Upsert-BookingAgent_Prod"
-        class="com.salesforce.dataloader.process.ProcessRunner"
-        scope="prototype">
+          class="com.salesforce.dataloader.process.ProcessRunner"
+          scope="prototype">
         <description>Update for Booking.</description>
-        <property name="name" value="Step14-Upsert-BookingAgent_Prod" />
+        <property name="name" value="Step14-Upsert-BookingAgent_Prod"/>
         <property name="configOverrideMap">
             <map>
-                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com" />
-                <entry key="sfdc.username" value="daveb@uncruise.com" />
-                <entry key="sfdc.password"
-                    value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612" />
-                <entry key="process.encryptionKeyFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt" />
-                <entry key="sfdc.timeoutSecs" value="600" />
-                <entry key="sfdc.loadBatchSize" value="50" />
-                <entry key="sfdc.externalIdField" value="External_Id__c" />
-                <entry key="sfdc.entity" value="Booking_Contact_Role_Sync__c" />
-                <entry key="process.operation" value="upsert" />
-                <entry key="process.mappingFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step14-Upsert-BookingAgent.sdl" />
-                <entry key="dataAccess.name"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step14-Upsert-BookingAgent.csv" />
-                <entry key="dataAccess.type" value="csvRead" />
-                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800" />
+                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com"/> 
+                <entry key="sfdc.username" value="daveb@uncruise.com"/>
+                <entry key="sfdc.password" value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612"/>
+                <entry key="process.encryptionKeyFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt"/>
+                <entry key="sfdc.timeoutSecs" value="600"/>
+                <entry key="sfdc.loadBatchSize" value="50"/>
+                <entry key="sfdc.externalIdField" value="External_Id__c"/>
+                <entry key="sfdc.entity" value="Booking_Contact_Role_Sync__c"/>
+                <entry key="process.operation" value="upsert"/>
+                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step14-Upsert-BookingAgent.sdl"/>
+                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step14-Upsert-BookingAgent.csv"/>
+                <entry key="dataAccess.type" value="csvRead"/>
+                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800"/>
             </map>
         </property>
     </bean>
     <bean id="Step03-Upsert-Guest_Prod"
-        class="com.salesforce.dataloader.process.ProcessRunner"
-        scope="prototype">
+          class="com.salesforce.dataloader.process.ProcessRunner"
+          scope="prototype">
         <description>Update for Booking.</description>
-        <property name="name" value="Step03-Upsert-Guest_Prod" />
+        <property name="name" value="Step03-Upsert-Guest_Prod"/>
         <property name="configOverrideMap">
             <map>
-                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com" />
-                <entry key="sfdc.username" value="daveb@uncruise.com" />
-                <entry key="sfdc.password"
-                    value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612" />
-                <entry key="process.encryptionKeyFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt" />
-                <entry key="sfdc.timeoutSecs" value="600" />
-                <entry key="sfdc.loadBatchSize" value="50" />
-                <entry key="sfdc.externalIdField" value="CustomerID__c" />
-                <entry key="sfdc.entity" value="Contact_Sync__c" />
-                <entry key="process.operation" value="upsert" />
-                <entry key="process.mappingFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step03-Upsert-Guest.sdl" />
-                <entry key="dataAccess.name"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step03-Upsert-Guest.csv" />
-                <entry key="dataAccess.type" value="csvRead" />
-                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800" />
+                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com"/> 
+                <entry key="sfdc.username" value="daveb@uncruise.com"/>
+                <entry key="sfdc.password" value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612"/>
+                <entry key="process.encryptionKeyFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt"/>
+                <entry key="sfdc.timeoutSecs" value="600"/>
+                <entry key="sfdc.loadBatchSize" value="50"/>
+                <entry key="sfdc.externalIdField" value="CustomerID__c"/>
+                <entry key="sfdc.entity" value="Contact_Sync__c"/>
+                <entry key="process.operation" value="upsert"/>
+                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step03-Upsert-Guest.sdl"/>
+                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step03-Upsert-Guest.csv"/>
+                <entry key="dataAccess.type" value="csvRead"/>
+                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800"/>
             </map>
         </property>
     </bean>
     <bean id="Step04-Upsert-GuestSeaware_Prod"
-        class="com.salesforce.dataloader.process.ProcessRunner"
-        scope="prototype">
+          class="com.salesforce.dataloader.process.ProcessRunner"
+          scope="prototype">
         <description>Update for Booking.</description>
-        <property name="name" value="Step04-Upsert-GuestSeaware_Prod" />
+        <property name="name" value="Step04-Upsert-GuestSeaware_Prod"/>
         <property name="configOverrideMap">
             <map>
-                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com" />
-                <entry key="sfdc.username" value="daveb@uncruise.com" />
-                <entry key="sfdc.password"
-                    value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612" />
-                <entry key="process.encryptionKeyFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt" />
-                <entry key="sfdc.timeoutSecs" value="600" />
-                <entry key="sfdc.loadBatchSize" value="50" />
-                <entry key="sfdc.externalIdField" value="Seaware_Id__c" />
-                <entry key="sfdc.entity" value="Contact_Sync__c" />
-                <entry key="process.operation" value="upsert" />
-                <entry key="process.mappingFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step04-Upsert-GuestSeaware.sdl" />
-                <entry key="dataAccess.name"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step04-Upsert-GuestSeaware.csv" />
-                <entry key="dataAccess.type" value="csvRead" />
-                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800" />
+                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com"/> 
+                <entry key="sfdc.username" value="daveb@uncruise.com"/>
+                <entry key="sfdc.password" value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612"/>
+                <entry key="process.encryptionKeyFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt"/>
+                <entry key="sfdc.timeoutSecs" value="600"/>
+                <entry key="sfdc.loadBatchSize" value="50"/>
+                <entry key="sfdc.externalIdField" value="Seaware_Id__c"/>
+                <entry key="sfdc.entity" value="Contact_Sync__c"/>
+                <entry key="process.operation" value="upsert"/>
+                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step04-Upsert-GuestSeaware.sdl"/>
+                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step04-Upsert-GuestSeaware.csv"/>
+                <entry key="dataAccess.type" value="csvRead"/>
+                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800"/>
             </map>
         </property>
     </bean>
     <bean id="Step15-Upsert-ItemFlight_Prod"
-        class="com.salesforce.dataloader.process.ProcessRunner"
-        scope="prototype">
+          class="com.salesforce.dataloader.process.ProcessRunner"
+          scope="prototype">
         <description>Update for Booking.</description>
-        <property name="name" value="Step15-Upsert-ItemFlight_Prod" />
+        <property name="name" value="Step15-Upsert-ItemFlight_Prod"/>
         <property name="configOverrideMap">
             <map>
-                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com" />
-                <entry key="sfdc.username" value="daveb@uncruise.com" />
-                <entry key="sfdc.password"
-                    value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612" />
-                <entry key="process.encryptionKeyFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt" />
-                <entry key="sfdc.timeoutSecs" value="600" />
-                <entry key="sfdc.loadBatchSize" value="50" />
-                <entry key="sfdc.externalIdField" value="External_Id__c" />
-                <entry key="sfdc.entity" value="Item__c" />
-                <entry key="process.operation" value="upsert" />
-                <entry key="process.mappingFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step15-Upsert-ItemFlight.sdl" />
-                <entry key="dataAccess.name"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step15-Upsert-ItemFlight.csv" />
-                <entry key="dataAccess.type" value="csvRead" />
-                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800" />
+                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com"/> 
+                <entry key="sfdc.username" value="daveb@uncruise.com"/>
+                <entry key="sfdc.password" value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612"/>
+                <entry key="process.encryptionKeyFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt"/>
+                <entry key="sfdc.timeoutSecs" value="600"/>
+                <entry key="sfdc.loadBatchSize" value="50"/>
+                <entry key="sfdc.externalIdField" value="External_Id__c"/>
+                <entry key="sfdc.entity" value="Item__c"/>
+                <entry key="process.operation" value="upsert"/>
+                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step15-Upsert-ItemFlight.sdl"/>
+                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step15-Upsert-ItemFlight.csv"/>
+                <entry key="dataAccess.type" value="csvRead"/>
+                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800"/>
             </map>
         </property>
     </bean>
     <bean id="Step16-Upsert-ItemHotel_Prod"
-        class="com.salesforce.dataloader.process.ProcessRunner"
-        scope="prototype">
+          class="com.salesforce.dataloader.process.ProcessRunner"
+          scope="prototype">
         <description>Update for Booking.</description>
-        <property name="name" value="Step16-Upsert-ItemHotel_Prod" />
+        <property name="name" value="Step16-Upsert-ItemHotel_Prod"/>
         <property name="configOverrideMap">
             <map>
-                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com" />
-                <entry key="sfdc.username" value="daveb@uncruise.com" />
-                <entry key="sfdc.password"
-                    value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612" />
-                <entry key="process.encryptionKeyFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt" />
-                <entry key="sfdc.timeoutSecs" value="600" />
-                <entry key="sfdc.loadBatchSize" value="50" />
-                <entry key="sfdc.externalIdField" value="External_Id__c" />
-                <entry key="sfdc.entity" value="Item__c" />
-                <entry key="process.operation" value="upsert" />
-                <entry key="process.mappingFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step16-Upsert-ItemHotel.sdl" />
-                <entry key="dataAccess.name"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step16-Upsert-ItemHotel.csv" />
-                <entry key="dataAccess.type" value="csvRead" />
-                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800" />
+                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com"/> 
+                <entry key="sfdc.username" value="daveb@uncruise.com"/>
+                <entry key="sfdc.password" value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612"/>
+                <entry key="process.encryptionKeyFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt"/>
+                <entry key="sfdc.timeoutSecs" value="600"/>
+                <entry key="sfdc.loadBatchSize" value="50"/>
+                <entry key="sfdc.externalIdField" value="External_Id__c"/>
+                <entry key="sfdc.entity" value="Item__c"/>
+                <entry key="process.operation" value="upsert"/>
+                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step16-Upsert-ItemHotel.sdl"/>
+                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step16-Upsert-ItemHotel.csv"/>
+                <entry key="dataAccess.type" value="csvRead"/>
+                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800"/>
             </map>
         </property>
     </bean>
     <bean id="Step17-Upsert-ItemContact_Prod"
-        class="com.salesforce.dataloader.process.ProcessRunner"
-        scope="prototype">
+          class="com.salesforce.dataloader.process.ProcessRunner"
+          scope="prototype">
         <description>Update for Booking.</description>
-        <property name="name" value="Step17-Upsert-ItemContact_Prod" />
+        <property name="name" value="Step17-Upsert-ItemContact_Prod"/>
         <property name="configOverrideMap">
             <map>
-                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com" />
-                <entry key="sfdc.username" value="daveb@uncruise.com" />
-                <entry key="sfdc.password"
-                    value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612" />
-                <entry key="process.encryptionKeyFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt" />
-                <entry key="sfdc.timeoutSecs" value="600" />
-                <entry key="sfdc.loadBatchSize" value="50" />
-                <entry key="sfdc.externalIdField" value="External_Id__c" />
-                <entry key="sfdc.entity" value="Item_Contact__c" />
-                <entry key="process.operation" value="upsert" />
-                <entry key="process.mappingFile"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step17-Upsert-ItemContact.sdl" />
-                <entry key="dataAccess.name"
-                    value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step17-Upsert-ItemContact.csv" />
-                <entry key="dataAccess.type" value="csvRead" />
-                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800" />
+                <entry key="sfdc.endpoint" value="https://un-cruise.my.salesforce.com"/> 
+                <entry key="sfdc.username" value="daveb@uncruise.com"/>
+                <entry key="sfdc.password" value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612"/>
+                <entry key="process.encryptionKeyFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\DataLoader\key.txt"/>
+                <entry key="sfdc.timeoutSecs" value="600"/>
+                <entry key="sfdc.loadBatchSize" value="50"/>
+                <entry key="sfdc.externalIdField" value="External_Id__c"/>
+                <entry key="sfdc.entity" value="Item_Contact__c"/>
+                <entry key="process.operation" value="upsert"/>
+                <entry key="process.mappingFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\DataLoader\Step17-Upsert-ItemContact.sdl"/>
+                <entry key="dataAccess.name" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE-BOOKINGS\Salesforce-Importer\Clients\SEAWARE-BOOKINGS\Import\Step17-Upsert-ItemContact.csv"/>
+                <entry key="dataAccess.type" value="csvRead"/>
+                <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800"/>
             </map>
         </property>
     </bean>
