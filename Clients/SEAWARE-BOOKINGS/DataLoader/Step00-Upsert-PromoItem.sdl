@@ -2,7 +2,7 @@
 #Sat Nov 20 14:18:58 PST 2021
 Booking__c=Booking__r\:Booking_Number_Seaware__c
 External_Id__c=External_Id__c
-Contact__c=Contact__r\:CustomerID__c
+Contact__c=Contact__r\:Seaware_Id__c
 Amount__c=Amount__c
 Code__c=Code__c
 Name=Name
