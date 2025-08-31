@@ -3,3 +3,4 @@
 External_Id__c=Item__r\:External_Id__c
 Item_External_Id__c=Item_External_Id__c
 guest=Contact__r\:Seaware_Id__c
+External_Id__c=External_Id__c
