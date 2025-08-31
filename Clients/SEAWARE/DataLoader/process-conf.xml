@@ -232,8 +232,7 @@
             </map>
         </property>
     </bean>
-    </bean>
-        <bean id="Step00-Upsert-PromoItem_Prod"
+    <bean id="Step00-Upsert-PromoItem_Prod"
         class="com.salesforce.dataloader.process.ProcessRunner"
         scope="prototype">
         <description>Update for Booking.</description>
