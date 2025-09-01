@@ -114,6 +114,7 @@
                 <entry key="process.initialLastRunDate" value="2006-12-01T00:00:00.000-0800"/>
             </map>
         </property>
+    </bean>
     <bean id="Step00-Upsert-Booking_Prod"
           class="com.salesforce.dataloader.process.ProcessRunner"
           scope="prototype">
