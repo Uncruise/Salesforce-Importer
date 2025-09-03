@@ -1040,7 +1040,7 @@ def send_email(client_emaillist, subject, file_path, emailattachments, log_path)
     # Send To Admin Only unless there is a csv file which means there was at least a load attempt and not a system failure
     sendTo_AdminOnly = True
 
-    sendTo_AdminAddress = "admin@uncruise.com"
+    sendTo_AdminAddress = "itreports@uncruise.com"
     for sendToEmail in send_to:
         if re.search("uncruise", sendToEmail, re.IGNORECASE):
             sendTo_AdminAddress = sendToEmail
