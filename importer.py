@@ -532,11 +532,11 @@ def refresh_and_export(importer_directory, salesforce_type,
 
                         TARGET = "Microsoft.Mashup.Container.Loader.exe"
                         if wait_until_gone_windows(TARGET, retries=0, check_every=0):
-                            print(f"No {TARGET} processes running. Proceeding.")
+                            print("No {} processes running. Proceeding.".format(TARGET))
                             #open_wait_time = 0
                             #break
                         else:
-                            print(f"Process still running {TARGET}.")
+                            print("Process still running {}.".format(TARGET))
 
                     else:
                         time.sleep(open_wait_time)
@@ -550,9 +550,9 @@ def refresh_and_export(importer_directory, salesforce_type,
                 
                 TARGET = "Microsoft.Mashup.Container.Loader.exe"
                 if wait_until_gone_windows(TARGET, retries=30, check_every=60):
-                    print(f"No {TARGET} processes running. Proceeding.")
+                    print("No {} processes running. Proceeding.".format(TARGET))
                 else:
-                    print(f"Gave up after 30 retries waiting for {TARGET}.")
+                    print("Gave up after 30 retries waiting for {}.".format(TARGET))
 
                 message = "Import Process - Refreshing all connections...Completed"
                 print(message)
