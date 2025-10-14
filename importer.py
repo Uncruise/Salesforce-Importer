@@ -530,13 +530,13 @@ def refresh_and_export(importer_directory, salesforce_type,
                         print(message)
                         refresh_status += message + "\n"
 
-                        TARGET = "Microsoft.Mashup.Container.Loader.exe"
-                        if wait_until_gone_windows(TARGET, retries=0, check_every=0):
-                            print("No {} processes running. Proceeding.".format(TARGET))
-                            #open_wait_time = 0
-                            #break
-                        else:
-                            print("Process still running {}.".format(TARGET))
+                #        TARGET = "Microsoft.Mashup.Container.Loader.exe"
+                #        if wait_until_gone_windows(TARGET, retries=0, check_every=0):
+                #            print("No {} processes running. Proceeding.".format(TARGET))
+                #            #open_wait_time = 0
+                #            #break
+                #        else:
+                #            print("Process still running {}.".format(TARGET))
 
                     else:
                         time.sleep(open_wait_time)
@@ -548,11 +548,11 @@ def refresh_and_export(importer_directory, salesforce_type,
         #                    break
 
                 
-                TARGET = "Microsoft.Mashup.Container.Loader.exe"
-                if wait_until_gone_windows(TARGET, retries=30, check_every=60):
-                    print("No {} processes running. Proceeding.".format(TARGET))
-                else:
-                    print("Gave up after 30 retries waiting for {}.".format(TARGET))
+        #        TARGET = "Microsoft.Mashup.Container.Loader.exe"
+        #        if wait_until_gone_windows(TARGET, retries=30, check_every=60):
+        #            print("No {} processes running. Proceeding.".format(TARGET))
+        #        else:
+        #            print("Gave up after 30 retries waiting for {}.".format(TARGET))
 
                 message = "Import Process - Refreshing all connections...Completed"
                 print(message)
@@ -656,31 +656,57 @@ def refresh_and_export(importer_directory, salesforce_type,
 import subprocess
 import time
 
-CREATE_NO_WINDOW = 0x08000000  # hide tasklist window
+CREATE_NO_WINDOW = 0x08000000  # hide console window
 
 def any_running_tasklist(name):
-    """Return True if a process with the given image name is running (Windows)."""
+    """
+    Return True if a process with the given image name is running (Windows).
+    Handles the '*32' suffix used by tasklist for 32-bit processes.
+    """
+    target = name.lower()
+    target_star32 = (name + " *32").lower()
+
+    # Fast path: filtered, CSV, no header
     try:
-        out = subprocess.check_output(["tasklist"], creationflags=CREATE_NO_WINDOW)\
-                        .decode("utf-8", "ignore")
+        out = subprocess.check_output(
+            ["tasklist", "/FI", "IMAGENAME eq " + name, "/FO", "CSV", "/NH"],
+            creationflags=CREATE_NO_WINDOW
+        ).decode("utf-8", "ignore").strip()
+        if out and not out.startswith("INFO:"):
+            # First CSV field is the Image Name, inside quotes
+            first_field = out.splitlines()[0].split('","', 1)[0].strip('"').lower()
+            if first_field == target or first_field == target_star32:
+                return True
     except Exception:
-        # Be conservative on failure
+        pass  # fall through to the unfiltered check
+
+    # Fallback: unfiltered scan (handles '*32' and localization)
+    try:
+        out = subprocess.check_output(
+            ["tasklist"],
+            creationflags=CREATE_NO_WINDOW
+        ).decode("utf-8", "ignore").lower()
+    except Exception:
+        # Be conservative if tasklist fails
         return True
 
     for line in out.splitlines():
         line = line.strip()
-        if not line or line.startswith("Image Name") or line.startswith("="):
+        if not line or line.startswith("image name") or line.startswith("="):
             continue
-        image = line.split()[0]
-        if image.lower() == name.lower():
+        img = line.split()[0]  # first token is image name
+        if img == target or img == target_star32:
             return True
     return False
+
 
 def wait_until_gone_windows(name, retries=30, check_every=60):
     """
     Returns True when the process is NOT running.
     One immediate check, then up to `retries` more checks,
     sleeping `check_every` seconds between them.
+    - retries=0 → exactly one check
+    - check_every can be 0 for no delay
     """
     # Initial check
     if not any_running_tasklist(name):
