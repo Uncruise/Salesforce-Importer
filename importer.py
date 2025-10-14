@@ -530,6 +530,12 @@ def refresh_and_export(importer_directory, salesforce_type,
                         print(message)
                         refresh_status += message + "\n"
 
+                        TARGET = "Microsoft.Mashup.Container.Loader.exe"
+                        if wait_until_gone_windows(TARGET, retries=0, check_every=0):
+                            print(f"No {TARGET} processes running. Proceeding.")
+                            open_wait_time = 0
+                            break
+
                     else:
                         time.sleep(open_wait_time)
                         open_wait_time = 0
@@ -538,6 +544,13 @@ def refresh_and_export(importer_directory, salesforce_type,
         #                if keyboard_hook.key_pressed():
         #                    print "\nUser interrupted wait cycle\n"
         #                    break
+
+                
+                TARGET = "Microsoft.Mashup.Container.Loader.exe"
+                if wait_until_gone_windows(TARGET, retries=30, check_every=60):
+                    print(f"No {TARGET} processes running. Proceeding.")
+                else:
+                    print(f"Gave up after 30 retries waiting for {TARGET}.")
 
                 message = "Import Process - Refreshing all connections...Completed"
                 print(message)
@@ -637,6 +650,42 @@ def refresh_and_export(importer_directory, salesforce_type,
     excel_connection.Quit()
 
     return refresh_status
+
+import subprocess
+import time
+
+CREATE_NO_WINDOW = 0x08000000  # hide tasklist window
+
+def any_running_tasklist(name: str) -> bool:
+    """Return True if a process with the given image name is running."""
+    try:
+        out = subprocess.check_output(["tasklist"], creationflags=CREATE_NO_WINDOW)\
+                        .decode("utf-8", "ignore")
+    except Exception:
+        # Be conservative on failure
+        return True
+
+    for line in out.splitlines():
+        line = line.strip()
+        if not line or line.startswith("Image Name") or line.startswith("="):
+            continue
+        image = line.split()[0]
+        if image.lower() == name.lower():
+            return True
+    return False
+
+def wait_until_gone_windows(name: str, retries: int = 30, check_every: int = 60) -> bool:
+
+    # Initial check
+    if not any_running_tasklist(name):
+        return True
+    
+    # Additional retries
+    for _ in range(retries):
+        time.sleep(check_every)
+        if not any_running_tasklist(name):
+            return True
+    return False
 
 # workbook details: https://learn.microsoft.com/en-us/office/vba/api/excel.workbook
 def process_manifest(workbook, sheet_name, statusDirectory):
