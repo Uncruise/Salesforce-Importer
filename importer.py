@@ -533,8 +533,10 @@ def refresh_and_export(importer_directory, salesforce_type,
                         TARGET = "Microsoft.Mashup.Container.Loader.exe"
                         if wait_until_gone_windows(TARGET, retries=0, check_every=0):
                             print(f"No {TARGET} processes running. Proceeding.")
-                            open_wait_time = 0
-                            break
+                            #open_wait_time = 0
+                            #break
+                        else:
+                            print(f"Process still running {TARGET}.")
 
                     else:
                         time.sleep(open_wait_time)
