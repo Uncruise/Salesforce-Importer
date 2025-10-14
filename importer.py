@@ -658,8 +658,8 @@ import time
 
 CREATE_NO_WINDOW = 0x08000000  # hide tasklist window
 
-def any_running_tasklist(name: str) -> bool:
-    """Return True if a process with the given image name is running."""
+def any_running_tasklist(name):
+    """Return True if a process with the given image name is running (Windows)."""
     try:
         out = subprocess.check_output(["tasklist"], creationflags=CREATE_NO_WINDOW)\
                         .decode("utf-8", "ignore")
@@ -676,17 +676,23 @@ def any_running_tasklist(name: str) -> bool:
             return True
     return False
 
-def wait_until_gone_windows(name: str, retries: int = 30, check_every: int = 60) -> bool:
-
+def wait_until_gone_windows(name, retries=30, check_every=60):
+    """
+    Returns True when the process is NOT running.
+    One immediate check, then up to `retries` more checks,
+    sleeping `check_every` seconds between them.
+    """
     # Initial check
     if not any_running_tasklist(name):
         return True
-    
+
     # Additional retries
     for _ in range(retries):
-        time.sleep(check_every)
+        if check_every:
+            time.sleep(check_every)
         if not any_running_tasklist(name):
             return True
+
     return False
 
 # workbook details: https://learn.microsoft.com/en-us/office/vba/api/excel.workbook
