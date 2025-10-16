@@ -360,13 +360,16 @@ def process_data(importer_directory, salesforce_type, client_type,
     try:
         if (not skipexcelrefresh and not contains_error(status_process_data)
                 and not contains_error(output_log.lower())):
+            
+            wait_for_mashup_idle(cpu_threshold_total=5.0, settle_seconds=10, timeout=900)
+
             status_process_data = refresh_and_export(importer_directory,
                                                      salesforce_type, client_type,
                                                      client_subtype, operation,
                                                      wait_time, interactivemode, displayalerts)
             
             wait_for_mashup_idle(cpu_threshold_total=5.0, settle_seconds=10, timeout=900)
-            
+
         else:
             status_process_data = "Skipping refresh and export from Excel"
     except Exception as ex:
