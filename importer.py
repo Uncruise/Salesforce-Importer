@@ -364,6 +364,9 @@ def process_data(importer_directory, salesforce_type, client_type,
                                                      salesforce_type, client_type,
                                                      client_subtype, operation,
                                                      wait_time, interactivemode, displayalerts)
+            
+            wait_for_mashup_idle(cpu_threshold_total=5.0, settle_seconds=10, timeout=900)
+            
         else:
             status_process_data = "Skipping refresh and export from Excel"
     except Exception as ex:
@@ -412,6 +415,50 @@ def open_workbook(xlapp, xlfile):
             print(e)
             xlwb = None                    
     return(xlwb)
+
+def wait_for_mashup_idle(cpu_threshold_total=5.0, settle_seconds=10, timeout=900):
+    """
+    Wait until all Microsoft.Mashup.Container* processes are collectively
+    below `cpu_threshold_total` % CPU for `settle_seconds` consecutively.
+    Times out after `timeout` seconds.
+    """
+    import time
+    try:
+        import psutil
+    except ImportError:
+        # Best-effort fallback: just wait a short fixed time if psutil isn't installed
+        time.sleep(15)
+        return
+
+    start = time.time()
+    consecutive_ok = 0
+
+    # Warm up psutil cpu percent
+    for p in psutil.process_iter(['name']):
+        if p.info['name'] and p.info['name'].startswith('Microsoft.Mashup.Container'):
+            try: p.cpu_percent(interval=None)
+            except Exception: pass
+
+    while True:
+        total = 0.0
+        for p in psutil.process_iter(['name']):
+            name = p.info['name'] or ''
+            if name.startswith('Microsoft.Mashup.Container'):
+                try:
+                    total += p.cpu_percent(interval=1.0)  # 1-sec sample
+                except Exception:
+                    pass
+
+        if total <= cpu_threshold_total:
+            consecutive_ok += 1
+        else:
+            consecutive_ok = 0
+
+        if consecutive_ok * 1.0 >= settle_seconds:
+            return  # mashup appears idle
+
+        if time.time() - start > timeout:
+            raise TimeoutError("Mashup containers did not go idle before timeout")
 
 def refresh_and_export(importer_directory, salesforce_type,
                        client_type, client_subtype, operation,
