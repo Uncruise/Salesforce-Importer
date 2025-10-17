@@ -488,7 +488,7 @@ def refresh_and_export(importer_directory, salesforce_type,
     excel_connection.Interactive = False
 
     # Optional: hide Excel window (good for background automation)
-    excel_connection.Visible = True  # or True if debugging
+    excel_connection.Visible = False  # or True if debugging
 
     excel_file_path = importer_directory + "\\"
     excel_file = excel_file_path + client_type + "-" + client_subtype + "_" + salesforce_type + ".xlsx"
