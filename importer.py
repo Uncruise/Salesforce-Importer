@@ -486,7 +486,6 @@ def refresh_and_export(importer_directory, salesforce_type,
     excel_connection.EnableEvents = False
     excel_connection.DisplayAlerts = False
     excel_connection.Interactive = False
-    excel_connection.Calculation = -4135  # xlCalculationManual
 
     # Optional: hide Excel window (good for background automation)
     excel_connection.Visible = True  # or True if debugging
@@ -700,7 +699,6 @@ def refresh_and_export(importer_directory, salesforce_type,
     excel_connection.EnableEvents = True
     excel_connection.DisplayAlerts = True
     excel_connection.Interactive = True
-    excel_connection.Calculation = -4105  # xlCalculationManual 
 
     excel_connection.Quit()
 
