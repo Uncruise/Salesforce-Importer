@@ -514,10 +514,6 @@ def refresh_and_export(importer_directory, salesforce_type,
         try:
             workbook = open_workbook(excel_connection, excel_file)
 
-            excel_connection.Calculate()
-            workbook.ForceFullCalculation = True           # workbook-level flag
-            excel_connection.CalculateFullRebuild()        # application-level rebuild
-
             workbook_assigned = True
 
             found_operation_sheet = False
@@ -537,6 +533,10 @@ def refresh_and_export(importer_directory, salesforce_type,
                 print(message)
                 refresh_status += message + "\n"
                 time.sleep(30)
+
+                excel_connection.Calculate()
+                workbook.ForceFullCalculation = True           # workbook-level flag
+                excel_connection.CalculateFullRebuild()        # application-level rebuild
 
                 #for connection in workbook.Connections:
                     #print connection.name
