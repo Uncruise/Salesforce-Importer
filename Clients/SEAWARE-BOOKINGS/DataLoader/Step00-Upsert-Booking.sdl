@@ -3,6 +3,7 @@
 Name=Name
 StageName=StageName
 CloseDate=CloseDate
+Confirmation_Date__c=Confirmation_Date__c
 Booking_Number_Seaware__c=Booking_Number_Seaware__c
 Reservation_Sync_Request__c=Reservation_Sync_Request__c
 SyncDate__c=SyncDate__c
