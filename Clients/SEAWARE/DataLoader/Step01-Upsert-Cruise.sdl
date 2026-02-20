@@ -8,3 +8,5 @@ Itinerary_Disembark__c=Itinerary_Disembark__c
 Itinerary_Embark__c=Itinerary_Embark__c
 ShipCode=Ship__r\:Ship_Code__c
 Availability__c=Availability__c
+Charter_Invoice_Total__c=Charter_Invoice_Total__c
+Charter_Commission_Total__c=Charter_Commission_Total__c
