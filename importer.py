@@ -657,17 +657,17 @@ def refresh_and_export(importer_directory, salesforce_type,
     excel_connection = win32.gencache.EnsureDispatch("Excel.Application")
 
     try:
-        excel_connection.ErrorCheckingOptions.BackgroundChecking = True
+        excel_connection.ErrorCheckingOptions.BackgroundChecking = False
     except Exception:
         pass    
 
-    excel_connection.EnableEvents = True
-    excel_connection.DisplayAlerts = True
-    excel_connection.Interactive = True
+    excel_connection.EnableEvents = False
+    excel_connection.DisplayAlerts = False
+    excel_connection.Interactive = False
 
     # Optional: hide Excel window (good for background automation)
-    excel_connection.ScreenUpdating = True # or True if debugging
-    excel_connection.Visible = True  # or True if debugging
+    excel_connection.ScreenUpdating = False # or True if debugging
+    excel_connection.Visible = False  # or True if debugging
 
     excel_file_path = importer_directory + "\\"
     excel_file = excel_file_path + client_type + "-" + client_subtype + "_" + salesforce_type + ".xlsx"
@@ -708,10 +708,10 @@ def refresh_and_export(importer_directory, salesforce_type,
 
             else:
 
-                message = "\nImport Process - Pausing 30 seconds for Excel to load in the background (You can see Excel in Task Manager but will be hidden from the desktop for better performance)..."
+                message = "\nImport Process - Pausing 10 seconds for Excel to load in the background (You can see Excel in Task Manager but will be hidden from the desktop for better performance)..."
                 print(message)
                 refresh_status += message + "\n"
-                time.sleep(30)
+                time.sleep(10)
 
                 excel_connection.Calculate()
                 workbook.ForceFullCalculation = True           # workbook-level flag
@@ -885,10 +885,10 @@ def refresh_and_export(importer_directory, salesforce_type,
                 excel_connection.Quit()
                 raise Exception("refresh_and_export", refresh_status)
 
-            message = "\nImport Process - Pausing 30 seconds for system to recover from error..."
+            message = "\nImport Process - Pausing 10 seconds for system to recover from error..."
             print(message)
             refresh_status += message + "\n"
-            time.sleep(30)
+            time.sleep(10)
 
         finally:
             if not workbook is None and workbook_assigned:
