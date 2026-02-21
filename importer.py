@@ -764,12 +764,14 @@ def refresh_and_export(importer_directory, salesforce_type,
                 print(message)
                 refresh_status += message + "\n"                
 
+                open_wait_time = 0
+
                 # Wait for excel to finish refresh (don't need this anymore if the previous waits are working)
-                message = ("Pausing " + str(open_wait_time) +
-                        " seconds to give Excel time to complete background query...")
+                #message = ("Pausing " + str(open_wait_time) +
+                #        " seconds to give Excel time to complete background query...")
         #                   "\n\t\t***if Excel background query complete then press any key to exit wait cycle")
-                print(message)
-                refresh_status += message + "\n"
+                #print(message)
+                #refresh_status += message + "\n"
 
         #        with KeyboardHook() as keyboard_hook:
 
