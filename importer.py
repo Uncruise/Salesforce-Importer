@@ -751,14 +751,14 @@ def refresh_and_export(importer_directory, salesforce_type,
                 refresh_status += message + "\n"                
 
                 # Wait until Excel says refresh is finished
-                wait_for_excel_refresh(excel_connection, workbook, poll_seconds=1.0, timeout=1800, log_every=30)
+#                wait_for_excel_refresh(excel_connection, workbook, poll_seconds=1.0, timeout=1800, log_every=30)
 
                 message = "wait_for_excel_refresh completed"
                 print(message)
                 refresh_status += message + "\n"                
 
                 # Optional: ensure PQ/Mashup containers settle (your existing backstop)
-                wait_for_mashup_idle(cpu_threshold_total=5.0, settle_seconds=10, timeout=900)
+#                wait_for_mashup_idle(cpu_threshold_total=5.0, settle_seconds=10, timeout=900)
 
                 message = "wait_for_mashup_idle completed"
                 print(message)
