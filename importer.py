@@ -1048,15 +1048,20 @@ def file_linecount(file_name):
     return line_index
 
 def import_dataloader(importer_directory, client_type, salesforce_type, operation, updaterequired):
-    """Import into Salesforce using DataLoader"""
+    """Import into Salesforce using DataLoader (.sdl + RunDataLoader.bat)."""
 
     import os
+    import time
     from os import listdir
     from os.path import join
     from subprocess import Popen, PIPE
 
-    bat_path = importer_directory + "\\DataLoader"
-    import_path = importer_directory + "\\Import"
+    bat_path = join(importer_directory, "DataLoader")
+    import_path = join(importer_directory, "Import")
+    run_bat = join(bat_path, "RunDataLoader.bat")
+
+    if not os.path.exists(run_bat):
+        raise FileNotFoundError(f"RunDataLoader.bat not found: {run_bat}")
 
     return_code = ""
     return_stdout = ""
@@ -1064,71 +1069,83 @@ def import_dataloader(importer_directory, client_type, salesforce_type, operatio
 
     datafound = False
 
-    for file_name in listdir(bat_path):
+    # Deterministic order helps (Step01, Step02, Step03, etc.)
+    sdl_files = sorted(
+        [f for f in listdir(bat_path) if f.lower().endswith(".sdl") and operation.lower() in f.lower()]
+    )
 
-        if not operation in file_name or ".sdl" not in file_name:
-            continue
+    print(f"DL: operation={operation} sdl_files_found={len(sdl_files)}")
 
-        # Check if associated csv has any data
-        sheet_name = os.path.splitext(file_name)[0]
-        import_file = join(import_path, sheet_name + ".csv")
-
+    for file_name in sdl_files:
         print(f"DL SCAN: file_name={file_name} operation={operation}")
 
         sheet_name = os.path.splitext(file_name)[0]
         import_file = join(import_path, sheet_name + ".csv")
-        print(f"DL CHECK: looking for csv={import_file} exists={os.path.exists(import_file)}")
 
-        if os.path.exists(import_file):
-            try:
-                print(f"DL CHECK: contains_data={contains_data(import_file)}")
-            except Exception as ex:
-                print(f"DL CHECK: contains_data ERROR for {import_file}: {ex}")        
+        exists_csv = os.path.exists(import_file)
+        print(f"DL CHECK: looking for csv={import_file} exists={exists_csv}")
 
-        if not os.path.exists(import_file) or not contains_data(import_file):
+        if not exists_csv:
+            continue
+
+        try:
+            has_data = contains_data(import_file)
+            print(f"DL CHECK: contains_data={has_data}")
+        except Exception as ex:
+            print(f"DL CHECK: contains_data ERROR for {import_file}: {ex}")
+            # If we can't verify, be conservative and skip
+            continue
+
+        if not has_data:
             continue
 
         datafound = True
-        bat_file = (join(bat_path, "RunDataLoader.bat")
-                    + " " + salesforce_type + " "  + client_type + " " + sheet_name)
 
-        message = "Starting Import Process: " + bat_file + " for file: " + import_file
+        # IMPORTANT: run BAT via cmd.exe /c to prevent BAT from terminating Python loop
+        args = ["cmd.exe", "/c", run_bat, salesforce_type, client_type, sheet_name]
+
+        message = f"Starting Import Process: {' '.join(args)} for file: {import_file}"
         print(message)
         return_stdout += message + "\n"
-        import_process = Popen(bat_file, stdout=PIPE, stderr=PIPE)
+
+        # text=True -> stdout/stderr are strings (not bytes)
+        import_process = Popen(args, stdout=PIPE, stderr=PIPE, text=True)
 
         stdout, stderr = import_process.communicate()
 
-        return_code += "import_dataloader (returncode): " + str(import_process.returncode)
-        return_stdout += "\n\nimport_dataloader (stdout):\n" + stdout
-        return_stderr += "\n\nimport_dataloader (stderr):\n" + stderr
+        # Keep the original behavior of aggregating logs
+        return_code += f"\nimport_dataloader ({sheet_name}) (returncode): {import_process.returncode}"
+        if stdout:
+            return_stdout += f"\nimport_dataloader ({sheet_name}) (stdout):\n{stdout}"
+        if stderr:
+            return_stderr += f"\nimport_dataloader ({sheet_name}) (stderr):\n{stderr}"
 
-        # dataloader v62 is giving api error but is still successful upload; Error while calling web service operation
-        return_code = "import_dataloader (returncode): 0"
-        return_stdout = ""
-        return_stderr = ""
+        print(f"Finished Import Process: {sheet_name} returncode={import_process.returncode}")
 
- #       if (import_process.returncode != 0
- #               or contains_error(return_stdout)
- #               or "We couldn't find the Java Runtime Environment (JRE)" in return_stdout):
- #           raise Exception("Invalid Return Code", return_code + return_stdout + return_stderr)
+        # Small breather so Data Loader can flush logs/locks before the next step
+        time.sleep(1)
 
-  #      status_path = importer_directory + "\\status"
+        # If you want to fail fast when Data Loader actually fails, uncomment:
+        # if import_process.returncode != 0:
+        #     raise Exception("Invalid Return Code", return_code + return_stdout + return_stderr)
 
-  #      for file_name_status in listdir(status_path):
-  #          file_name_status_full = join(status_path, file_name_status)
-  #          if contains_error(file_name_status_full) and contains_data(file_name_status_full):
-  #              raise Exception("error file contains data: " + file_name_status_full, (
-  #                  return_code + return_stdout + return_stderr))
-
-   # message = "Finished Import Process: " + bat_file + " for file: " + import_file
-   # print(message)
+        # If you *must* preserve your legacy "force success" behavior, you can keep it:
+        # (but I recommend not doing this unless you have a known false-negative return code)
+        # return_code = "import_dataloader (returncode): 0"
+        # return_stdout = ""
+        # return_stderr = ""
 
     # Check if updaterequired
-    if operation == "Update" and updaterequired and not datafound:
+    if operation.lower() == "update" and updaterequired and not datafound:
         raise Exception("Update operation and updaterequired but no data was found")
 
-    return return_code + return_stdout + return_stderr
+    # If no files matched / no data, return something useful
+    if not datafound:
+        msg = f"DL: No data found for operation={operation} (no matching CSVs with rows)"
+        print(msg)
+        return msg
+
+    return return_code + "\n" + return_stdout + "\n" + return_stderr
 
 def export_dataloader(importer_directory, salesforce_type, interactivemode, displayalerts, location_local, client_type, client_subtype):
     
