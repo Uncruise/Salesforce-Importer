@@ -419,6 +419,91 @@ def open_workbook(xlapp, xlfile):
             xlwb = None                    
     return(xlwb)
 
+import time
+
+def wait_for_excel_refresh(excel_app, workbook, poll_seconds=1.0, timeout=1800):
+    """
+    Wait until Excel finishes refreshing data connections + async queries.
+    Works best when Background Refresh is OFF for all connections, but still
+    helps even if some are async.
+
+    Raises TimeoutError if still refreshing after timeout seconds.
+    """
+    start = time.time()
+
+    # Excel 2010+ usually has this
+    has_async_wait = hasattr(excel_app, "CalculateUntilAsyncQueriesDone")
+
+    while True:
+        # 1) Let Excel process its message queue so refresh/calc can progress
+        try:
+            excel_app.Calculate()  # lightweight nudge
+        except Exception:
+            pass
+
+        # 2) Ask Excel to wait for async queries (Power Query, OData, etc.)
+        if has_async_wait:
+            try:
+                excel_app.CalculateUntilAsyncQueriesDone()
+            except Exception:
+                # Some environments throw intermittently; ignore and continue polling
+                pass
+
+        # 3) Check workbook-level refreshing state (newer Excel)
+        wb_refreshing = False
+        try:
+            wb_refreshing = bool(getattr(workbook, "Refreshing"))
+        except Exception:
+            wb_refreshing = False
+
+        # 4) Check per-connection / per-query refreshing flags (covers more cases)
+        any_refreshing = False
+        try:
+            # Workbook.Connections covers PowerQuery, OLEDB, OData, etc.
+            for c in workbook.Connections:
+                try:
+                    if hasattr(c, "OLEDBConnection") and c.OLEDBConnection.Refreshing:
+                        any_refreshing = True
+                        break
+                except Exception:
+                    pass
+                try:
+                    if hasattr(c, "ODBCConnection") and c.ODBCConnection.Refreshing:
+                        any_refreshing = True
+                        break
+                except Exception:
+                    pass
+        except Exception:
+            pass
+
+        # QueryTables (legacy, but still common)
+        if not any_refreshing:
+            try:
+                for ws in workbook.Worksheets:
+                    try:
+                        for qt in ws.QueryTables:
+                            try:
+                                if qt.Refreshing:
+                                    any_refreshing = True
+                                    break
+                            except Exception:
+                                pass
+                        if any_refreshing:
+                            break
+                    except Exception:
+                        continue
+            except Exception:
+                pass
+
+        # Done?
+        if not wb_refreshing and not any_refreshing:
+            return
+
+        if time.time() - start > timeout:
+            raise TimeoutError("Excel refresh still running after timeout")
+
+        time.sleep(poll_seconds)
+
 def wait_for_mashup_idle(cpu_threshold_total=5.0, settle_seconds=10, timeout=900):
     """
     Wait until all Microsoft.Mashup.Container* processes are collectively
@@ -563,7 +648,25 @@ def refresh_and_export(importer_directory, salesforce_type,
                 #   Instead use Exporter to pull the data external to Excel.
                 workbook.RefreshAll()
 
-                # Wait for excel to finish refresh
+                message = "Waiting for Excel refresh to complete (connections/query tables/async queries)..."
+                print(message)
+                refresh_status += message + "\n"                
+
+                # Wait until Excel says refresh is finished
+                wait_for_excel_refresh(excel_connection, workbook, poll_seconds=1.0, timeout=1800)
+
+                message = "wait_for_excel_refresh completed"
+                print(message)
+                refresh_status += message + "\n"                
+
+                # Optional: ensure PQ/Mashup containers settle (your existing backstop)
+                wait_for_mashup_idle(cpu_threshold_total=5.0, settle_seconds=10, timeout=900)
+
+                message = "wait_for_mashup_idle completed"
+                print(message)
+                refresh_status += message + "\n"                
+
+                # Wait for excel to finish refresh (don't need this anymore if the previous waits are working)
                 message = ("Pausing " + str(open_wait_time) +
                         " seconds to give Excel time to complete background query...")
         #                   "\n\t\t***if Excel background query complete then press any key to exit wait cycle")
