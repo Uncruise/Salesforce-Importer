@@ -8,8 +8,8 @@ IF "%JAVA_HOME%" == "" (
     )
 )
 
-set PYTHON_HOME=C:\Python27
-set PATH=C:\Python27;C:\Python27\Scripts;%PATH%
+set PYTHON_HOME=%PYTHON3%
+set PATH=%PYTHON3%;%PYTHON3%Scripts;%PATH%
 echo exporter: setting PYTHON_HOME to %PYTHON_HOME%
 
 IF "%SF_DATALOADER%" == "" (
