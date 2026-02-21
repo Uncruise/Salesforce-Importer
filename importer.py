@@ -1475,7 +1475,13 @@ def send_email(client_emaillist, subject, file_path, emailattachments, log_path)
     if 'SERVER_EMAIL_PASSWORDOVERRIDE' in os.environ:
         server_password = os.environ.get('SERVER_EMAIL_PASSWORDOVERRIDE')
 
-    server.login(send_from, base64.b64decode(server_password))
+    # server_password should be a str; env vars are usually str, but be defensive
+    if isinstance(server_password, bytes):
+        server_password = server_password.decode("utf-8")
+
+    decoded_pw = base64.b64decode(server_password).decode("utf-8")
+    server.login(send_from, decoded_pw)
+
     text = msg.as_string()
 
     server.sendmail(send_from, send_to, text)
