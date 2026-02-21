@@ -657,17 +657,17 @@ def refresh_and_export(importer_directory, salesforce_type,
     excel_connection = win32.gencache.EnsureDispatch("Excel.Application")
 
     try:
-        excel_connection.ErrorCheckingOptions.BackgroundChecking = True
+        excel_connection.ErrorCheckingOptions.BackgroundChecking = False
     except Exception:
         pass    
 
-    excel_connection.ScreenUpdating = True
-    excel_connection.EnableEvents = True
-    excel_connection.DisplayAlerts = True
-    excel_connection.Interactive = True
+    excel_connection.EnableEvents = False
+    excel_connection.DisplayAlerts = False
+    excel_connection.Interactive = False
 
     # Optional: hide Excel window (good for background automation)
-    excel_connection.Visible = True  # or True if debugging
+    excel_connection.ScreenUpdating = False # or True if debugging
+    excel_connection.Visible = False  # or True if debugging
 
     excel_file_path = importer_directory + "\\"
     excel_file = excel_file_path + client_type + "-" + client_subtype + "_" + salesforce_type + ".xlsx"
@@ -1619,7 +1619,7 @@ def send_email(client_emaillist, subject, file_path, emailattachments, log_path)
     smtp.quit()
 
     print("\nSent email results\n")
-    
+
 def send_salesforce():
     """Send results to Salesforce to handle notifications"""
     #Future update to send to salesforce to handle notifications instead of send_email
