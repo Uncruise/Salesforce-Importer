@@ -220,8 +220,10 @@
                 <entry key="sfdc.username" value="daveb@uncruise.com"/>
                 <entry key="sfdc.password" value="85571243ba6dce0c8de3d43cf8f44d385fb4db900ed99dd6d54602b5f130e0689b4dc4c519e3b698ecfe48d2493f48900f3eb716aab8b5e798fb5fc54f857612"/>
                 <entry key="process.encryptionKeyFile" value="C:\repo\Salesforce-Importer-Private\Clients\SEAWARE\DataLoader\key.txt"/>
-                <entry key="sfdc.timeoutSecs" value="600"/>
-                <entry key="sfdc.loadBatchSize" value="50"/>
+                <entry key="sfdc.timeoutSecs" value="1800"/>
+                <entry key="sfdc.loadBatchSize" value="200"/>
+                <entry key="sfdc.useBulkApi" value="true"/>
+                <entry key="sfdc.bulkApiSerialMode" value="false"/>
                 <entry key="sfdc.externalIdField" value="External_Id__c"/>
                 <entry key="sfdc.entity" value="Item_Contact__c"/>
                 <entry key="process.operation" value="upsert"/>
