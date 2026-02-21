@@ -1019,20 +1019,19 @@ def process_manifest(workbook, sheet_name, statusDirectory):
         group.to_csv(groupFileName, index=False)
 
 def contains_data(file_name):
-    """Check if file contains data after header"""
+    """True if CSV has at least one non-empty data row after header."""
+    import csv
 
-    line_index = 1
-    with open(file_name) as file_open:
-        for line in file_open:
-            # Check if line empty
-            line_check = line.replace(",", "")
-            line_check = line_check.replace('"', '')
-            if (line_index == 2 and line_check != "\n"):
-                return True
-            elif line_index > 2:
-                return True
+    with open(file_name, newline='', encoding='utf-8-sig') as f:
+        reader = csv.reader(f)
+        header = next(reader, None)
+        if not header:
+            return False
 
-            line_index += 1
+        for row in reader:
+            # any non-empty cell means it's data
+            if any((cell or "").strip() for cell in row):
+                return True
 
     return False
 
@@ -1073,6 +1072,18 @@ def import_dataloader(importer_directory, client_type, salesforce_type, operatio
         # Check if associated csv has any data
         sheet_name = os.path.splitext(file_name)[0]
         import_file = join(import_path, sheet_name + ".csv")
+
+        print(f"DL SCAN: file_name={file_name} operation={operation}")
+
+        sheet_name = os.path.splitext(file_name)[0]
+        import_file = join(import_path, sheet_name + ".csv")
+        print(f"DL CHECK: looking for csv={import_file} exists={os.path.exists(import_file)}")
+
+        if os.path.exists(import_file):
+            try:
+                print(f"DL CHECK: contains_data={contains_data(import_file)}")
+            except Exception as ex:
+                print(f"DL CHECK: contains_data ERROR for {import_file}: {ex}")        
 
         if not os.path.exists(import_file) or not contains_data(import_file):
             continue
