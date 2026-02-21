@@ -657,17 +657,17 @@ def refresh_and_export(importer_directory, salesforce_type,
     excel_connection = win32.gencache.EnsureDispatch("Excel.Application")
 
     try:
-        excel_connection.ErrorCheckingOptions.BackgroundChecking = False
+        excel_connection.ErrorCheckingOptions.BackgroundChecking = True
     except Exception:
         pass    
 
-    excel_connection.EnableEvents = False
-    excel_connection.DisplayAlerts = False
-    excel_connection.Interactive = False
+    excel_connection.EnableEvents = True
+    excel_connection.DisplayAlerts = True
+    excel_connection.Interactive = True
 
     # Optional: hide Excel window (good for background automation)
-    excel_connection.ScreenUpdating = False # or True if debugging
-    excel_connection.Visible = False  # or True if debugging
+    excel_connection.ScreenUpdating = True # or True if debugging
+    excel_connection.Visible = True  # or True if debugging
 
     excel_file_path = importer_directory + "\\"
     excel_file = excel_file_path + client_type + "-" + client_subtype + "_" + salesforce_type + ".xlsx"
