@@ -657,7 +657,7 @@ def refresh_and_export(importer_directory, salesforce_type,
     excel_connection = win32.gencache.EnsureDispatch("Excel.Application")
 
     try:
-        excel_connection.ErrorCheckingOptions.BackgroundChecking = False
+        excel_connection.ErrorCheckingOptions.BackgroundChecking = True
     except Exception:
         pass    
 
@@ -667,7 +667,7 @@ def refresh_and_export(importer_directory, salesforce_type,
     excel_connection.Interactive = True
 
     # Optional: hide Excel window (good for background automation)
-    excel_connection.Visible = True  # or True if debugging
+    excel_connection.Visible = False  # or True if debugging
 
     excel_file_path = importer_directory + "\\"
     excel_file = excel_file_path + client_type + "-" + client_subtype + "_" + salesforce_type + ".xlsx"
@@ -753,12 +753,14 @@ def refresh_and_export(importer_directory, salesforce_type,
                 print(message)
                 refresh_status += message + "\n"                
 
-                # Optional: ensure PQ/Mashup containers settle (your existing backstop)
-                wait_for_mashup_idle(cpu_threshold_total=5.0, settle_seconds=10, timeout=900)
+                # wait_for_excel_refresh the sheet data is loaded, mashup just keep running for awhile so going to just save out sheets
 
-                message = "wait_for_mashup_idle completed"
-                print(message)
-                refresh_status += message + "\n"                
+                # Optional: ensure PQ/Mashup containers settle (your existing backstop)
+               # wait_for_mashup_idle(cpu_threshold_total=5.0, settle_seconds=10, timeout=900)
+
+               # message = "wait_for_mashup_idle completed"
+               # print(message)
+               # refresh_status += message + "\n"                
 
                 open_wait_time = 0
 
@@ -1345,20 +1347,48 @@ def export_odbc(importer_directory, salesforce_type, client_subtype, interactive
 
     return return_code + return_stdout + return_stderr
 
-def contains_error(text):
-    """ Check for errors in text string """
+import re
 
-    modified_text = text.lower().replace("0 errors", "success")
+def contains_error(text: str) -> bool:
+    """
+    Determine if text contains a real failure condition.
 
-    errorFound = False
+    Avoids false positives from:
+      - '0 errors'
+      - benign log text
+      - success CSV filenames
 
-    if "error" in modified_text.lower():
-        errorFound = True
+    Detects:
+      - Exception / Traceback
+      - Fatal / Failed
+      - Invalid Return Code
+      - Non-zero return codes
+    """
 
-    if "exception" in modified_text.lower():
-        errorFound = True
+    if not text:
+        return False
 
-    return errorFound
+    t = str(text).lower()
+
+    # Explicit success cases
+    if "0 errors" in t:
+        return False
+
+    # Hard failure indicators
+    error_patterns = [
+        r"\bexception\b",
+        r"\btraceback\b",
+        r"\bfatal\b",
+        r"\bfailed\b",
+        r"\binvalid return code\b",
+        r"\breturncode\):\s*[1-9]\d*\b",  # non-zero return code
+    ]
+
+    for pattern in error_patterns:
+        if re.search(pattern, t):
+            return True
+
+    return False
 
 def send_email(client_emaillist, subject, file_path, emailattachments, log_path):
     """Send email via O365"""
