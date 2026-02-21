@@ -420,134 +420,232 @@ def open_workbook(xlapp, xlfile):
     return(xlwb)
 
 import time
+from datetime import datetime
 
-def wait_for_excel_refresh(excel_app, workbook, poll_seconds=1.0, timeout=1800):
+def wait_for_excel_refresh(excel_app, workbook, poll_seconds=1.0, timeout=1800, log_every=30):
     """
-    Wait until Excel finishes refreshing data connections + async queries.
-    Works best when Background Refresh is OFF for all connections, but still
-    helps even if some are async.
-
-    Raises TimeoutError if still refreshing after timeout seconds.
+    Wait until Excel finishes refreshing.
+    Logs start time + periodic status (elapsed + what's still refreshing).
     """
+    started_at = datetime.now()
     start = time.time()
+    last_log = 0
 
-    # Excel 2010+ usually has this
+    print(f"[{started_at:%Y-%m-%d %H:%M:%S}] Excel refresh wait START")
+
     has_async_wait = hasattr(excel_app, "CalculateUntilAsyncQueriesDone")
 
-    while True:
-        # 1) Let Excel process its message queue so refresh/calc can progress
+    def _still_refreshing_details():
+        """Return (any_refreshing: bool, details: list[str])"""
+        details = []
+        any_refreshing = False
+
+        # Workbook-level flag (not always present/accurate on older Excel)
         try:
-            excel_app.Calculate()  # lightweight nudge
+            if bool(getattr(workbook, "Refreshing")):
+                any_refreshing = True
+                details.append("Workbook.Refreshing=True")
         except Exception:
             pass
 
-        # 2) Ask Excel to wait for async queries (Power Query, OData, etc.)
-        if has_async_wait:
-            try:
-                excel_app.CalculateUntilAsyncQueriesDone()
-            except Exception:
-                # Some environments throw intermittently; ignore and continue polling
-                pass
-
-        # 3) Check workbook-level refreshing state (newer Excel)
-        wb_refreshing = False
+        # Connections
         try:
-            wb_refreshing = bool(getattr(workbook, "Refreshing"))
-        except Exception:
-            wb_refreshing = False
-
-        # 4) Check per-connection / per-query refreshing flags (covers more cases)
-        any_refreshing = False
-        try:
-            # Workbook.Connections covers PowerQuery, OLEDB, OData, etc.
             for c in workbook.Connections:
+                cname = ""
+                try:
+                    cname = getattr(c, "Name", "") or ""
+                except Exception:
+                    cname = ""
+
+                # OLEDB / ODBC
                 try:
                     if hasattr(c, "OLEDBConnection") and c.OLEDBConnection.Refreshing:
                         any_refreshing = True
-                        break
+                        details.append(f"Connection (OLEDB) refreshing: {cname}")
                 except Exception:
                     pass
                 try:
                     if hasattr(c, "ODBCConnection") and c.ODBCConnection.Refreshing:
                         any_refreshing = True
-                        break
+                        details.append(f"Connection (ODBC) refreshing: {cname}")
+                except Exception:
+                    pass
+
+                # Power Query connections sometimes expose a generic Refreshing
+                try:
+                    if hasattr(c, "Refreshing") and bool(getattr(c, "Refreshing")):
+                        any_refreshing = True
+                        details.append(f"Connection refreshing: {cname}")
                 except Exception:
                     pass
         except Exception:
             pass
 
-        # QueryTables (legacy, but still common)
-        if not any_refreshing:
+        # QueryTables (legacy, but common)
+        try:
+            for ws in workbook.Worksheets:
+                ws_name = ""
+                try: ws_name = ws.Name
+                except Exception: ws_name = "Sheet(?)"
+
+                try:
+                    for qt in ws.QueryTables:
+                        try:
+                            if qt.Refreshing:
+                                any_refreshing = True
+                                qt_name = ""
+                                try: qt_name = getattr(qt, "Name", "") or ""
+                                except Exception: qt_name = ""
+                                details.append(f"QueryTable refreshing: {ws_name} / {qt_name}")
+                        except Exception:
+                            pass
+                except Exception:
+                    pass
+        except Exception:
+            pass
+
+        return any_refreshing, details
+
+    while True:
+        # Let Excel keep working
+        try:
+            excel_app.Calculate()
+        except Exception:
+            pass
+
+        # Try waiting for async queries (Excel 2010+; works in many cases)
+        if has_async_wait:
             try:
-                for ws in workbook.Worksheets:
-                    try:
-                        for qt in ws.QueryTables:
-                            try:
-                                if qt.Refreshing:
-                                    any_refreshing = True
-                                    break
-                            except Exception:
-                                pass
-                        if any_refreshing:
-                            break
-                    except Exception:
-                        continue
+                excel_app.CalculateUntilAsyncQueriesDone()
             except Exception:
                 pass
 
+        any_refreshing, details = _still_refreshing_details()
+
+        elapsed = time.time() - start
+
+        # Heartbeat logging
+        if elapsed - last_log >= log_every:
+            last_log = elapsed
+            now = datetime.now()
+            print(f"[{now:%Y-%m-%d %H:%M:%S}] Still waiting... elapsed={int(elapsed)}s")
+            if details:
+                # Keep log readable: show up to first 10 items
+                for line in details[:10]:
+                    print("  - " + line)
+                if len(details) > 10:
+                    print(f"  ... +{len(details) - 10} more")
+            else:
+                print("  (No specific refreshing items detected; Excel may be busy calculating.)")
+
         # Done?
-        if not wb_refreshing and not any_refreshing:
+        if not any_refreshing:
+            finished_at = datetime.now()
+            print(f"[{finished_at:%Y-%m-%d %H:%M:%S}] Excel refresh wait DONE (elapsed={int(elapsed)}s)")
             return
 
-        if time.time() - start > timeout:
-            raise TimeoutError("Excel refresh still running after timeout")
+        # Safety timeout
+        if elapsed > timeout:
+            now = datetime.now()
+            msg = f"[{now:%Y-%m-%d %H:%M:%S}] Timeout waiting for Excel refresh (elapsed={int(elapsed)}s)"
+            print(msg)
+            if details:
+                print("Still refreshing (last seen):")
+                for line in details[:20]:
+                    print("  - " + line)
+            raise TimeoutError(msg)
 
         time.sleep(poll_seconds)
 
-def wait_for_mashup_idle(cpu_threshold_total=5.0, settle_seconds=10, timeout=900):
+def wait_for_mashup_idle(cpu_threshold_total=5.0, settle_seconds=10, timeout=900, log_every=30):
     """
     Wait until all Microsoft.Mashup.Container* processes are collectively
-    below `cpu_threshold_total` % CPU for `settle_seconds` consecutively.
+    below `cpu_threshold_total` % CPU for `settle_seconds` consecutive 1-sec samples.
+    Logs start time + periodic status.
     Times out after `timeout` seconds.
     """
     import time
+    from datetime import datetime
+
     try:
         import psutil
     except ImportError:
         # Best-effort fallback: just wait a short fixed time if psutil isn't installed
+        started_at = datetime.now()
+        print(f"[{started_at:%Y-%m-%d %H:%M:%S}] Mashup idle wait START (psutil not installed) -> sleeping 15s")
         time.sleep(15)
+        finished_at = datetime.now()
+        print(f"[{finished_at:%Y-%m-%d %H:%M:%S}] Mashup idle wait DONE (fallback)")
         return
 
+    started_at = datetime.now()
     start = time.time()
     consecutive_ok = 0
+    last_log = 0
 
-    # Warm up psutil cpu percent
+    print(f"[{started_at:%Y-%m-%d %H:%M:%S}] Mashup idle wait START "
+          f"(threshold_total={cpu_threshold_total}%, settle_seconds={settle_seconds}, timeout={timeout}s)")
+
+    # Warm up psutil cpu percent to avoid first-call zeros/garbage
+    mashup_procs = []
     for p in psutil.process_iter(['name']):
-        if p.info['name'] and p.info['name'].startswith('Microsoft.Mashup.Container'):
-            try: p.cpu_percent(interval=None)
-            except Exception: pass
+        name = (p.info.get('name') or '')
+        if name.startswith('Microsoft.Mashup.Container'):
+            mashup_procs.append(p)
+            try:
+                p.cpu_percent(interval=None)
+            except Exception:
+                pass
 
     while True:
-        total = 0.0
+        # Re-discover processes each loop (they come/go)
+        mashup_procs = []
         for p in psutil.process_iter(['name']):
-            name = p.info['name'] or ''
+            name = (p.info.get('name') or '')
             if name.startswith('Microsoft.Mashup.Container'):
-                try:
-                    total += p.cpu_percent(interval=1.0)  # 1-sec sample
-                except Exception:
-                    pass
+                mashup_procs.append(p)
+
+        total = 0.0
+        alive_count = 0
+
+        # 1-second sample across all mashup processes
+        for p in mashup_procs:
+            try:
+                total += p.cpu_percent(interval=1.0)
+                alive_count += 1
+            except Exception:
+                # process ended or access denied; ignore
+                pass
 
         if total <= cpu_threshold_total:
             consecutive_ok += 1
         else:
             consecutive_ok = 0
 
-        if consecutive_ok * 1.0 >= settle_seconds:
-            return  # mashup appears idle
+        elapsed = time.time() - start
 
-        if time.time() - start > timeout:
-            raise TimeoutError("Mashup containers did not go idle before timeout")
+        # Heartbeat logging
+        if elapsed - last_log >= log_every:
+            last_log = elapsed
+            now = datetime.now()
+            print(f"[{now:%Y-%m-%d %H:%M:%S}] Mashup CPU total={total:.2f}% "
+                  f"procs={alive_count} consecutive_ok={consecutive_ok}/{settle_seconds} "
+                  f"elapsed={int(elapsed)}s")
 
+        # Consider "idle" once we've been under threshold for settle_seconds consecutive samples
+        if consecutive_ok >= settle_seconds:
+            finished_at = datetime.now()
+            print(f"[{finished_at:%Y-%m-%d %H:%M:%S}] Mashup idle wait DONE "
+                  f"(elapsed={int(elapsed)}s, last_total={total:.2f}%, procs={alive_count})")
+            return
+
+        if elapsed > timeout:
+            now = datetime.now()
+            msg = (f"[{now:%Y-%m-%d %H:%M:%S}] Timeout waiting for Mashup idle "
+                   f"(elapsed={int(elapsed)}s, last_total={total:.2f}%, procs={alive_count})")
+            print(msg)
+            raise TimeoutError(msg)
+        
 def refresh_and_export(importer_directory, salesforce_type,
                        client_type, client_subtype, operation,
                        wait_time, interactivemode, displayalerts):
@@ -653,7 +751,7 @@ def refresh_and_export(importer_directory, salesforce_type,
                 refresh_status += message + "\n"                
 
                 # Wait until Excel says refresh is finished
-                wait_for_excel_refresh(excel_connection, workbook, poll_seconds=1.0, timeout=1800)
+                wait_for_excel_refresh(excel_connection, workbook, poll_seconds=1.0, timeout=1800, log_every=30)
 
                 message = "wait_for_excel_refresh completed"
                 print(message)
