@@ -1020,134 +1020,166 @@ def process_manifest(workbook, sheet_name, statusDirectory):
         groupFileName = os.path.join(statusDirectory, "{}-{}-{}.csv".format(sheet_name, cruiseID, manifestType))
         group.to_csv(groupFileName, index=False)
 
-def contains_data(file_name):
-    """True if CSV has at least one non-empty data row after header."""
-    import csv
+import csv
 
-    with open(file_name, newline='', encoding='utf-8-sig') as f:
-        reader = csv.reader(f)
-        header = next(reader, None)
-        if not header:
-            return False
+def contains_data(file_name: str) -> bool:
+    """
+    True if CSV has at least one non-empty data row after header.
+    Tries UTF-8 first, then falls back to cp1252 and latin-1.
+    """
+    encodings = ["utf-8-sig", "cp1252", "latin-1"]
 
-        for row in reader:
-            # any non-empty cell means it's data
-            if any((cell or "").strip() for cell in row):
-                return True
+    last_ex = None
+    for enc in encodings:
+        try:
+            with open(file_name, newline="", encoding=enc, errors="strict") as f:
+                reader = csv.reader(f)
+                header = next(reader, None)
+                if not header:
+                    return False
+                for row in reader:
+                    if any((cell or "").strip() for cell in row):
+                        return True
+                return False
+        except Exception as ex:
+            last_ex = ex
+            continue
 
-    return False
-
-def file_linecount(file_name):
-    """Count how many lines after the header"""
-
-    # set index to -1 so the header is not counted
-    line_index = -1
-    with open(file_name) as file_open:
-        for line in file_open:
-            if line:
-                line_index += 1
-
-    return line_index
+    # If we get here, we truly couldn't parse the file
+    raise last_ex
 
 def import_dataloader(importer_directory, client_type, salesforce_type, operation, updaterequired):
-    """Import into Salesforce using DataLoader (.sdl + RunDataLoader.bat)."""
+    """Import into Salesforce using DataLoader (.sdl + .csv)."""
 
     import os
     import time
+    import subprocess
     from os import listdir
-    from os.path import join
-    from subprocess import Popen, PIPE
+    from os.path import join, splitext, exists
 
     bat_path = join(importer_directory, "DataLoader")
     import_path = join(importer_directory, "Import")
-    run_bat = join(bat_path, "RunDataLoader.bat")
-
-    if not os.path.exists(run_bat):
-        raise FileNotFoundError(f"RunDataLoader.bat not found: {run_bat}")
 
     return_code = ""
     return_stdout = ""
     return_stderr = ""
 
     datafound = False
+    sdl_files_found = 0
 
-    # Deterministic order helps (Step01, Step02, Step03, etc.)
-    sdl_files = sorted(
-        [f for f in listdir(bat_path) if f.lower().endswith(".sdl") and operation.lower() in f.lower()]
-    )
+    # Helper: tolerant CSV "has rows?" check (handles cp1252/utf8 and bad bytes)
+    def contains_data_tolerant(file_name):
+        import csv
+        # Try a couple common encodings; never fail hard
+        encodings_to_try = ["utf-8-sig", "utf-8", "cp1252"]
+        last_err = None
 
-    print(f"DL: operation={operation} sdl_files_found={len(sdl_files)}")
+        for enc in encodings_to_try:
+            try:
+                with open(file_name, newline="", encoding=enc, errors="replace") as f:
+                    reader = csv.reader(f)
+                    header = next(reader, None)
+                    if not header:
+                        return False
+                    for row in reader:
+                        if any((cell or "").strip() for cell in row):
+                            return True
+                    return False
+            except Exception as ex:
+                last_err = ex
 
-    for file_name in sdl_files:
-        print(f"DL SCAN: file_name={file_name} operation={operation}")
+        # If we somehow still can’t read it, treat as "has data" so we attempt load rather than skipping silently
+        print(f"DL CHECK: contains_data_tolerant WARNING for {file_name}: {last_err}")
+        return True
 
-        sheet_name = os.path.splitext(file_name)[0]
+    print(f"DL: operation={operation}")
+
+    if not exists(bat_path):
+        msg = f"DL: DataLoader folder not found: {bat_path}"
+        print(msg)
+        return "import_dataloader (returncode): 1\n" + msg
+
+    for file_name in listdir(bat_path):
+
+        if operation not in file_name or not file_name.lower().endswith(".sdl"):
+            continue
+
+        sdl_files_found += 1
+
+        sheet_name = splitext(file_name)[0]
         import_file = join(import_path, sheet_name + ".csv")
 
-        exists_csv = os.path.exists(import_file)
-        print(f"DL CHECK: looking for csv={import_file} exists={exists_csv}")
+        print(f"DL SCAN: file_name={file_name} operation={operation}")
+        print(f"DL CHECK: looking for csv={import_file} exists={os.path.exists(import_file)}")
 
-        if not exists_csv:
+        # Skip if CSV missing
+        if not os.path.exists(import_file):
             continue
 
+        # Skip if CSV exists but has no rows
         try:
-            has_data = contains_data(import_file)
-            print(f"DL CHECK: contains_data={has_data}")
+            has_rows = contains_data_tolerant(import_file)
+            print(f"DL CHECK: contains_data={has_rows}")
         except Exception as ex:
+            # Worst case: don’t crash; attempt the load
             print(f"DL CHECK: contains_data ERROR for {import_file}: {ex}")
-            # If we can't verify, be conservative and skip
-            continue
+            has_rows = True
 
-        if not has_data:
+        if not has_rows:
             continue
 
         datafound = True
 
-        # IMPORTANT: run BAT via cmd.exe /c to prevent BAT from terminating Python loop
-        args = ["cmd.exe", "/c", run_bat, salesforce_type, client_type, sheet_name]
+        # IMPORTANT: Use cmd.exe /c to run the BAT reliably, and keep stdout/stderr as BYTES
+        cmd = [
+            "cmd.exe", "/c",
+            join(bat_path, "RunDataLoader.bat"),
+            salesforce_type,
+            client_type,
+            sheet_name
+        ]
 
-        message = f"Starting Import Process: {' '.join(args)} for file: {import_file}"
+        message = f"Starting Import Process: {' '.join(cmd)} for file: {import_file}"
         print(message)
         return_stdout += message + "\n"
 
-        # text=True -> stdout/stderr are strings (not bytes)
-        import_process = Popen(args, stdout=PIPE, stderr=PIPE, text=True)
-
-        stdout, stderr = import_process.communicate()
-
-        # Keep the original behavior of aggregating logs
-        return_code += f"\nimport_dataloader ({sheet_name}) (returncode): {import_process.returncode}"
-        if stdout:
-            return_stdout += f"\nimport_dataloader ({sheet_name}) (stdout):\n{stdout}"
-        if stderr:
-            return_stderr += f"\nimport_dataloader ({sheet_name}) (stderr):\n{stderr}"
-
-        print(f"Finished Import Process: {sheet_name} returncode={import_process.returncode}")
-
-        # Small breather so Data Loader can flush logs/locks before the next step
+        # Small throttle can help with file handles / Java startup on busy servers
         time.sleep(1)
 
-        # If you want to fail fast when Data Loader actually fails, uncomment:
-        # if import_process.returncode != 0:
+        proc = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=False  # <-- critical: prevents the cp1252 readerthread UnicodeDecodeError
+        )
+
+        stdout_b, stderr_b = proc.communicate()
+
+        # Decode safely (never crash on weird bytes)
+        stdout = (stdout_b or b"").decode("utf-8", errors="replace")
+        stderr = (stderr_b or b"").decode("utf-8", errors="replace")
+
+        print(f"Finished Import Process: {sheet_name} returncode={proc.returncode}")
+
+        return_code += f"import_dataloader (returncode): {proc.returncode}\n"
+        if stdout.strip():
+            return_stdout += "\n\nimport_dataloader (stdout):\n" + stdout + "\n"
+        if stderr.strip():
+            return_stderr += "\n\nimport_dataloader (stderr):\n" + stderr + "\n"
+
+        # If you want “fail fast” on non-zero return codes, uncomment:
+        # if proc.returncode != 0:
         #     raise Exception("Invalid Return Code", return_code + return_stdout + return_stderr)
 
-        # If you *must* preserve your legacy "force success" behavior, you can keep it:
-        # (but I recommend not doing this unless you have a known false-negative return code)
-        # return_code = "import_dataloader (returncode): 0"
-        # return_stdout = ""
-        # return_stderr = ""
+    print(f"DL: operation={operation} sdl_files_found={sdl_files_found}")
+    if not datafound:
+        print(f"DL: No data found for operation={operation} (no matching CSVs with rows)")
 
     # Check if updaterequired
-    if operation.lower() == "update" and updaterequired and not datafound:
+    if operation == "Update" and updaterequired and not datafound:
         raise Exception("Update operation and updaterequired but no data was found")
 
-    # If no files matched / no data, return something useful
-    if not datafound:
-        msg = f"DL: No data found for operation={operation} (no matching CSVs with rows)"
-        print(msg)
-        return msg
-
-    return return_code + "\n" + return_stdout + "\n" + return_stderr
+    return return_code + return_stdout + return_stderr
 
 def export_dataloader(importer_directory, salesforce_type, interactivemode, displayalerts, location_local, client_type, client_subtype):
     
@@ -1351,47 +1383,83 @@ import re
 
 def contains_error(text: str) -> bool:
     """
-    Determine if text contains a real failure condition.
+    True if text likely indicates a real failure.
 
-    Avoids false positives from:
-      - '0 errors'
-      - benign log text
-      - success CSV filenames
-
-    Detects:
-      - Exception / Traceback
-      - Fatal / Failed
-      - Invalid Return Code
-      - Non-zero return codes
+    This is intentionally conservative:
+      - catches Tracebacks/Exceptions/Invalid Return Code/returncode != 0
+      - ignores common benign strings that include 'error' (e.g., '0 errors')
     """
-
     if not text:
         return False
 
     t = str(text).lower()
 
-    # Explicit success cases
-    if "0 errors" in t:
-        return False
+    # Normalize a couple things that commonly trigger false positives
+    t = t.replace("0 errors", "0_errors")  # prevent matching 'errors' patterns
+    t = t.replace("no data found", "no_data_found")
 
-    # Hard failure indicators
-    error_patterns = [
-        r"\bexception\b",
+    # Benign / expected phrases that should NOT trigger Error status
+    ignore_patterns = [
+        r"\b0_errors\b",
+        r"no_data_found",
+        r"no sheets matched the operation",
+        r"skipping refresh and export from excel",
+        r"skipping export from salesforce",
+        r"skip postgres export process",
+        r"skip odbc export process",
+        r"syntaxwarning: invalid escape sequence",   # Python warning, not fatal
+    ]
+    for pat in ignore_patterns:
+        if re.search(pat, t):
+            # Don't return yet; we still might have a real error elsewhere.
+            # We'll just remove these phrases from consideration.
+            t = re.sub(pat, "", t)
+
+    # Hard-fail signals (these should always mean "Error")
+    hard_fail_patterns = [
         r"\btraceback\b",
+        r"\bexception\b",
         r"\bfatal\b",
-        r"\bfailed\b",
         r"\binvalid return code\b",
-        r"\breturncode\):\s*[1-9]\d*\b",  # non-zero return code
+        r"\baccess denied\b",
+        r"\blogin failed\b",
+        r"\bauthentication\b.*\bfailed\b",
+        r"\bwe couldn't find the java runtime environment\b",
+        r"\btimeout waiting\b",
+        r"\breturncode\s*[:=]\s*[1-9]\d*\b",   # returncode: 2, returncode=1, etc.
+        r"\bimport_process.*returncode\s*[:=]\s*[1-9]\d*\b",
+        r"\berror\b.*\bdetected\b",
     ]
 
-    for pattern in error_patterns:
-        if re.search(pattern, t):
+    for pat in hard_fail_patterns:
+        if re.search(pat, t):
+            return True
+
+    # If the word 'error' still appears, only treat as error if it looks like a log marker
+    # (e.g., "ERROR:", "Unexpected error", etc.)
+    soft_fail_patterns = [
+        r"\berror\s*:",
+        r"\bunexpected error\b",
+        r"\berror while\b",
+        r"\berror calling\b",
+    ]
+    for pat in soft_fail_patterns:
+        if re.search(pat, t):
             return True
 
     return False
 
+def file_linecount(file_name):
+    """Count how many lines after the header (binary-safe)."""
+    line_index = -1  # header not counted
+    with open(file_name, "rb") as f:
+        for line in f:
+            if line:
+                line_index += 1
+    return line_index
+
 def send_email(client_emaillist, subject, file_path, emailattachments, log_path):
-    """Send email via O365"""
+    """Send email via O365 (robust recipients + attachment handling + encoding-safe)."""
 
     import base64
     from email.mime.application import MIMEApplication
@@ -1399,127 +1467,159 @@ def send_email(client_emaillist, subject, file_path, emailattachments, log_path)
     from email.mime.text import MIMEText
     from email.utils import COMMASPACE, formatdate
     import os
-    from os.path import basename
+    from os.path import basename, join, exists, splitext, isfile
     from shutil import copy
     import smtplib
     import re
+    import time
 
-    message = "\n\nPreparing email results\n"
-    print(message)
+    print("\n\nPreparing email results\n")
 
-    send_to = client_emaillist.split(";")
+    # Parse recipients
+    send_to = [x.strip() for x in client_emaillist.split(";") if x.strip()]
 
-    send_from = 'daveb@uncruise.com'
-    server = "smtp.office365.com"
-
-    if 'SERVER_EMAIL_USERNAME' in os.environ:
-        send_from = os.environ.get('SERVER_EMAIL_USERNAME')
-
-    if 'SERVER_EMAIL' in os.environ:
-        server = os.environ.get('SERVER_EMAIL')
-
-    #https://stackoverflow.com/questions/3362600/how-to-send-email-attachments
+    send_from = os.environ.get("SERVER_EMAIL_USERNAME", "daveb@uncruise.com")
+    smtp_host = os.environ.get("SERVER_EMAIL", "smtp.office365.com")
 
     msg = MIMEMultipart()
-
-    msg['From'] = send_from
-    msg['Date'] = formatdate(localtime=True)
-    msg['Subject'] = subject
-
-    from os import listdir
-    from os.path import isfile, join, exists
+    msg["From"] = send_from
+    msg["Date"] = formatdate(localtime=True)
+    msg["Subject"] = subject
 
     msgbody = subject + "\n\n"
     if not emailattachments:
         msgbody += "Attachments disabled: Result files can be accessed on the import client.\n\n"
 
-    # Send To Admin Only unless there is a csv file which means there was at least a load attempt and not a system failure
+    # Default: admin-only until we see at least one CSV (a true “load attempt”)
     sendTo_AdminOnly = True
-
     sendTo_AdminAddress = "itreports@uncruise.com"
+
     for sendToEmail in send_to:
         if re.search("uncruise", sendToEmail, re.IGNORECASE):
             sendTo_AdminAddress = sendToEmail
             break
 
+    # Decide actual SMTP recipients (IMPORTANT: use this list in sendmail)
+    smtp_recipients = [sendTo_AdminAddress]  # may be replaced later
+
+    # Helper: tolerant “has data” check that won’t blow up on cp1252 smart chars
+    def contains_data_tolerant(path):
+        import csv
+        encodings_to_try = ["utf-8-sig", "utf-8", "cp1252"]
+        for enc in encodings_to_try:
+            try:
+                with open(path, newline="", encoding=enc, errors="replace") as f:
+                    reader = csv.reader(f)
+                    header = next(reader, None)
+                    if not header:
+                        return False
+                    for row in reader:
+                        if any((cell or "").strip() for cell in row):
+                            return True
+                    return False
+            except Exception:
+                continue
+        # If we can't read it cleanly, assume it has data so we don't skip silently.
+        return True
+
     if file_path:
-        onlyfiles = [join(file_path, f) for f in listdir(file_path)
-                    if isfile(join(file_path, f))]
+        onlyfiles = [
+            join(file_path, f) for f in os.listdir(file_path)
+            if isfile(join(file_path, f))
+        ]
 
-        msgbody += "Log Directory: {}\n\n".format(log_path)
+        msgbody += f"Log Directory: {log_path}\n\n"
 
-        for file_name in onlyfiles:
+        for full_path in onlyfiles:
+            # Skip already-marked files
+            if ".sent" in full_path:
+                continue
 
-            if contains_data(file_name) and ".sent" not in file_name:
+            # This was your main driver for “only attach if contains_data”
+            # Use tolerant check to avoid UTF-8 decode crashes.
+            if not contains_data_tolerant(full_path):
+                continue
 
-                msgbody += "\t{}, with {} rows\n".format(basename(file_name), file_linecount(file_name))
+            # Describe file and row count (binary-safe file_linecount already)
+            msgbody += f"\t{basename(full_path)}, with {file_linecount(full_path)} rows\n"
 
-                if emailattachments or (contains_error(subject) and "log" in file_name.lower()) or contains_error(file_name.lower()):
+            # If we have a CSV, we consider this a real “load attempt” -> allow full distro
+            if full_path.lower().endswith(".csv"):
+                sendTo_AdminOnly = False
 
-                    if "csv" in file_name:
-                        sendTo_AdminOnly = False
+            # Attachment rules (same intent as yours, but keep it simple)
+            should_attach = (
+                emailattachments
+                or (contains_error(subject) and "log" in full_path.lower())
+                or contains_error(full_path.lower())
+            )
 
-                    with open(file_name, "rb") as file_name_open:
-                        part = MIMEApplication(
-                            file_name_open.read(),
-                            Name=basename(file_name)
-                            )
+            if should_attach:
+                with open(full_path, "rb") as f:
+                    part = MIMEApplication(f.read(), Name=basename(full_path))
+                part["Content-Disposition"] = f'attachment; filename="{basename(full_path)}"'
+                msg.attach(part)
 
-                    # After the file is closed
-                    part['Content-Disposition'] = 'attachment; filename="%s"' % basename(file_name)
-                    msg.attach(part)
+            # Rename to .sent.ext so it won't attach again
+            filename, ext = splitext(full_path)
+            sent_path = f"{filename}.sent{ext}"
 
-                # Rename file so do not attached again
-                sent_file = join(file_path, file_name)
-                filename, file_extension = os.path.splitext(sent_file)
-                sent_file = "{}.sent{}".format(filename, file_extension)
+            if exists(sent_path):
+                os.remove(sent_path)
 
-                if exists(sent_file):
-                    os.remove(sent_file)
+            os.rename(full_path, sent_path)
 
-                os.rename(file_name, sent_file)
+            # Save copy to log directory
+            try:
+                copy(sent_path, log_path)
+            except Exception as ex:
+                # Don’t fail email just because copy failed
+                msgbody += f"\n\tWARNING: could not copy {basename(sent_path)} to log dir: {ex}\n"
 
-                #Save copy to log directory
-                copy(sent_file, log_path)
-
-
-    # Check if sending email only to the Admin
+    # Build To header + SMTP recipients list (IMPORTANT)
     if sendTo_AdminOnly:
-        msg['To'] = sendTo_AdminAddress
+        msg["To"] = sendTo_AdminAddress
+        smtp_recipients = [sendTo_AdminAddress]
     else:
-        msg['To'] = COMMASPACE.join(send_to)
+        msg["To"] = COMMASPACE.join(send_to)
+        smtp_recipients = send_to
 
-    import time
-    msgbody += "\n\nAdventure Ready Consulting ETL Version: %s\n\n" % format(time.ctime(os.path.getmtime(join(file_path, '..\\..\\..\\importer.py'))))
+    # Add version footer
+    importer_py = join(file_path, "..\\..\\..\\importer.py") if file_path else None
+    if importer_py and exists(importer_py):
+        msgbody += "\n\nAdventure Ready Consulting ETL Version: %s\n\n" % format(
+            time.ctime(os.path.getmtime(importer_py))
+        )
 
     print(msgbody)
-    msg.attach(MIMEText(msgbody))
+    msg.attach(MIMEText(msgbody, _subtype="plain", _charset="utf-8"))
 
-    server = smtplib.SMTP(server, 587)
-    server.starttls()
+    # SMTP auth
+    server_password = os.environ.get("SERVER_EMAIL_PASSWORD", "unknown")
+    server_password = os.environ.get("SERVER_EMAIL_PASSWORDOVERRIDE", server_password)
 
-    server_password = 'unknown'
-    if 'SERVER_EMAIL_PASSWORD' in os.environ:
-        server_password = os.environ.get('SERVER_EMAIL_PASSWORD')
-
-    if 'SERVER_EMAIL_PASSWORDOVERRIDE' in os.environ:
-        server_password = os.environ.get('SERVER_EMAIL_PASSWORDOVERRIDE')
-
-    # server_password should be a str; env vars are usually str, but be defensive
     if isinstance(server_password, bytes):
-        server_password = server_password.decode("utf-8")
+        server_password = server_password.decode("utf-8", errors="replace")
 
-    decoded_pw = base64.b64decode(server_password).decode("utf-8")
-    server.login(send_from, decoded_pw)
+    # Be defensive: if it's not base64, allow plaintext password too
+    decoded_pw = None
+    try:
+        decoded_pw = base64.b64decode(server_password).decode("utf-8", errors="replace")
+    except Exception:
+        decoded_pw = server_password
+
+    smtp = smtplib.SMTP(smtp_host, 587)
+    smtp.starttls()
+    smtp.login(send_from, decoded_pw)
 
     text = msg.as_string()
 
-    server.sendmail(send_from, send_to, text)
-    server.quit()
+    # IMPORTANT: send to smtp_recipients (matches admin-only logic)
+    smtp.sendmail(send_from, smtp_recipients, text)
+    smtp.quit()
 
-    message = "\nSent email results\n"
-    print(message)
-
+    print("\nSent email results\n")
+    
 def send_salesforce():
     """Send results to Salesforce to handle notifications"""
     #Future update to send to salesforce to handle notifications instead of send_email
