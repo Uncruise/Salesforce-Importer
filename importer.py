@@ -1472,12 +1472,17 @@ def send_email(client_emaillist, subject, file_path, emailattachments, log_path)
     import smtplib
     import re
     import time
+    import csv
 
     print("\n\nPreparing email results\n")
 
-    # Parse recipients
-    send_to = [x.strip() for x in client_emaillist.split(";") if x.strip()]
+    # ===== Attachment Limits =====
+    MAX_ATTACH_BYTES = 1 * 1024 * 1024        # 1 MB per file
+    MAX_TOTAL_ATTACH_BYTES = 8 * 1024 * 1024  # 8 MB total
+    total_attached = 0
 
+    # ===== Recipients =====
+    send_to = [x.strip() for x in client_emaillist.split(";") if x.strip()]
     send_from = os.environ.get("SERVER_EMAIL_USERNAME", "daveb@uncruise.com")
     smtp_host = os.environ.get("SERVER_EMAIL", "smtp.office365.com")
 
@@ -1487,10 +1492,11 @@ def send_email(client_emaillist, subject, file_path, emailattachments, log_path)
     msg["Subject"] = subject
 
     msgbody = subject + "\n\n"
+
     if not emailattachments:
         msgbody += "Attachments disabled: Result files can be accessed on the import client.\n\n"
 
-    # Default: admin-only until we see at least one CSV (a true “load attempt”)
+    # ===== Admin-only default logic =====
     sendTo_AdminOnly = True
     sendTo_AdminAddress = "itreports@uncruise.com"
 
@@ -1499,12 +1505,10 @@ def send_email(client_emaillist, subject, file_path, emailattachments, log_path)
             sendTo_AdminAddress = sendToEmail
             break
 
-    # Decide actual SMTP recipients (IMPORTANT: use this list in sendmail)
-    smtp_recipients = [sendTo_AdminAddress]  # may be replaced later
+    smtp_recipients = [sendTo_AdminAddress]
 
-    # Helper: tolerant “has data” check that won’t blow up on cp1252 smart chars
+    # ===== Safe CSV Data Check =====
     def contains_data_tolerant(path):
-        import csv
         encodings_to_try = ["utf-8-sig", "utf-8", "cp1252"]
         for enc in encodings_to_try:
             try:
@@ -1519,9 +1523,9 @@ def send_email(client_emaillist, subject, file_path, emailattachments, log_path)
                     return False
             except Exception:
                 continue
-        # If we can't read it cleanly, assume it has data so we don't skip silently.
-        return True
+        return True  # fail-safe: assume data
 
+    # ===== Process Files =====
     if file_path:
         onlyfiles = [
             join(file_path, f) for f in os.listdir(file_path)
@@ -1531,23 +1535,18 @@ def send_email(client_emaillist, subject, file_path, emailattachments, log_path)
         msgbody += f"Log Directory: {log_path}\n\n"
 
         for full_path in onlyfiles:
-            # Skip already-marked files
+
             if ".sent" in full_path:
                 continue
 
-            # This was your main driver for “only attach if contains_data”
-            # Use tolerant check to avoid UTF-8 decode crashes.
             if not contains_data_tolerant(full_path):
                 continue
 
-            # Describe file and row count (binary-safe file_linecount already)
             msgbody += f"\t{basename(full_path)}, with {file_linecount(full_path)} rows\n"
 
-            # If we have a CSV, we consider this a real “load attempt” -> allow full distro
             if full_path.lower().endswith(".csv"):
                 sendTo_AdminOnly = False
 
-            # Attachment rules (same intent as yours, but keep it simple)
             should_attach = (
                 emailattachments
                 or (contains_error(subject) and "log" in full_path.lower())
@@ -1555,12 +1554,33 @@ def send_email(client_emaillist, subject, file_path, emailattachments, log_path)
             )
 
             if should_attach:
-                with open(full_path, "rb") as f:
-                    part = MIMEApplication(f.read(), Name=basename(full_path))
-                part["Content-Disposition"] = f'attachment; filename="{basename(full_path)}"'
-                msg.attach(part)
+                try:
+                    size_bytes = os.path.getsize(full_path)
+                except OSError:
+                    size_bytes = None
 
-            # Rename to .sent.ext so it won't attach again
+                if size_bytes is not None and size_bytes > MAX_ATTACH_BYTES:
+                    msgbody += (
+                        f"\t  (attachment skipped: {basename(full_path)} is "
+                        f"{size_bytes/1024/1024:.2f} MB > 1.00 MB)\n"
+                    )
+
+                elif size_bytes is not None and (total_attached + size_bytes) > MAX_TOTAL_ATTACH_BYTES:
+                    msgbody += (
+                        f"\t  (attachment skipped: total attachments would exceed "
+                        f"{MAX_TOTAL_ATTACH_BYTES/1024/1024:.0f} MB)\n"
+                    )
+
+                else:
+                    with open(full_path, "rb") as f:
+                        part = MIMEApplication(f.read(), Name=basename(full_path))
+                    part["Content-Disposition"] = f'attachment; filename="{basename(full_path)}"'
+                    msg.attach(part)
+
+                    if size_bytes:
+                        total_attached += size_bytes
+
+            # Rename to .sent.ext
             filename, ext = splitext(full_path)
             sent_path = f"{filename}.sent{ext}"
 
@@ -1569,14 +1589,12 @@ def send_email(client_emaillist, subject, file_path, emailattachments, log_path)
 
             os.rename(full_path, sent_path)
 
-            # Save copy to log directory
             try:
                 copy(sent_path, log_path)
             except Exception as ex:
-                # Don’t fail email just because copy failed
                 msgbody += f"\n\tWARNING: could not copy {basename(sent_path)} to log dir: {ex}\n"
 
-    # Build To header + SMTP recipients list (IMPORTANT)
+    # ===== Final Recipient Logic =====
     if sendTo_AdminOnly:
         msg["To"] = sendTo_AdminAddress
         smtp_recipients = [sendTo_AdminAddress]
@@ -1584,7 +1602,7 @@ def send_email(client_emaillist, subject, file_path, emailattachments, log_path)
         msg["To"] = COMMASPACE.join(send_to)
         smtp_recipients = send_to
 
-    # Add version footer
+    # ===== Version Footer =====
     importer_py = join(file_path, "..\\..\\..\\importer.py") if file_path else None
     if importer_py and exists(importer_py):
         msgbody += "\n\nAdventure Ready Consulting ETL Version: %s\n\n" % format(
@@ -1594,32 +1612,27 @@ def send_email(client_emaillist, subject, file_path, emailattachments, log_path)
     print(msgbody)
     msg.attach(MIMEText(msgbody, _subtype="plain", _charset="utf-8"))
 
-    # SMTP auth
+    # ===== SMTP Auth =====
     server_password = os.environ.get("SERVER_EMAIL_PASSWORD", "unknown")
     server_password = os.environ.get("SERVER_EMAIL_PASSWORDOVERRIDE", server_password)
 
     if isinstance(server_password, bytes):
         server_password = server_password.decode("utf-8", errors="replace")
 
-    # Be defensive: if it's not base64, allow plaintext password too
-    decoded_pw = None
     try:
         decoded_pw = base64.b64decode(server_password).decode("utf-8", errors="replace")
     except Exception:
-        decoded_pw = server_password
+        decoded_pw = server_password  # allow plaintext fallback
 
     smtp = smtplib.SMTP(smtp_host, 587)
     smtp.starttls()
     smtp.login(send_from, decoded_pw)
 
-    text = msg.as_string()
-
-    # IMPORTANT: send to smtp_recipients (matches admin-only logic)
-    smtp.sendmail(send_from, smtp_recipients, text)
+    smtp.sendmail(send_from, smtp_recipients, msg.as_string())
     smtp.quit()
 
     print("\nSent email results\n")
-
+    
 def send_salesforce():
     """Send results to Salesforce to handle notifications"""
     #Future update to send to salesforce to handle notifications instead of send_email
