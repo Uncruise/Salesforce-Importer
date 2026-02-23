@@ -346,7 +346,7 @@ def process_data(importer_directory, salesforce_type, client_type,
             status_process_data = "Skipping export from Salesforce"
     except Exception as ex:
         output_log += "\n\nexport_dataloader - Unexpected error:" + str(ex)
-        output_log += "\n\export_dataloader\n" + status_process_data
+        output_log += "\nexport_dataloader\n" + status_process_data
         status_process_data = "Error detected so skip processing - Exception"
     else:
         output_log += "\n\nExport\n" + status_process_data
@@ -370,7 +370,7 @@ def process_data(importer_directory, salesforce_type, client_type,
             status_process_data = "Skipping refresh and export from Excel"
     except Exception as ex:
         output_log += "\n\nrefresh_and_export - Unexpected error:" + str(ex)
-        output_log += "\n\refresh_and_export\n" + status_process_data
+        output_log += "\nrefresh_and_export\n" + status_process_data
         status_process_data = "Error detected so skip processing - Exception"
     else:
         output_log += "\n\nExport\n" + status_process_data
